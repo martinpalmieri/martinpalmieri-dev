@@ -1,6 +1,6 @@
 ---
 title: How to Empower and Support Junior Developers
-date: 2023/7/11
+date: 2023/7/09
 description: Nurturing the Growth of Junior Developers, A Guide for Managers
 tag: engineering management
 author: You
