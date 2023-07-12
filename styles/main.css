@@ -61,5 +61,12 @@ img.next-image {
 }
 
 .nav-line .nav-link {
+  text-decoration: none;
   color: #69778c;
+}
+
+.nav-line .nav-link:hover,
+.nav-line span.nav-link {
+  text-decoration: underline;
+  color: #000;
 }
