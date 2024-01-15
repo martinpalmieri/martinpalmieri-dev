@@ -3,7 +3,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "next",
-    "build": "node ./scripts/gen-rss.js && next build",
+    "build": "next build",
+    "build:gen-rss": "node ./scripts/gen-rss.js && next build",
     "start": "next start"
   },
   "dependencies": {
