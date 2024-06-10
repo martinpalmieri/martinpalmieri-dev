@@ -1,0 +1,102 @@
+---
+import workExperience from '../data/work-experience.json'
+import { formatISODate } from '../utils/date-formatter'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ShowMoreExperiences from '../components/ShowMoreExperiences.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+
+function formatExperienceData(data) {
+  return data.map((experience) => {
+    return {
+      ...experience,
+      startDate: formatISODate(experience.startDate),
+      endDate: experience.endDate
+        ? formatISODate(experience.endDate)
+        : 'Present'
+    }
+  })
+}
+
+const formattedExperienceData = formatExperienceData(workExperience)
+---
+
+<BaseLayout>
+  <Header />
+  <main
+    class={`h-[calc(100vh-144px)] lg:h-[calc(100vh-88px)] snap-mandatory snap-y overflow-y-scroll scroll-smooth main-container`}
+  >
+    {
+      formattedExperienceData.map(
+        ({ company, title, startDate, endDate, description }) => {
+          return (
+            <section
+              class={`h-[calc(100vh-144px)] lg:h-[calc(100vh-88px)] snap-center flex flex-col lg:flex-row items-center justify-center`}
+            >
+              <div class="w-full mb-2 lg:w-1/2 lg:mb-0">
+                <h1 class="font-title text-3xl lg:text-8xl">{company.name}</h1>
+              </div>
+              <div class="w-full lg:w-1/2">
+                <h3 class="font-bold text-xl lg:text-3xl">
+                  {startDate} - {endDate}
+                </h3>
+                <h2 class="font-extrabold text-xl lg:text-5xl mb-4">{title}</h2>
+                <p class="font-normal text-lg lg:text-2xl">{description}</p>
+              </div>
+            </section>
+          )
+        }
+      )
+    }
+  </main>
+  <ShowMoreExperiences />
+  <Footer />
+</BaseLayout>
+
+<script is:inline data-astro-rerun>
+  document.addEventListener(
+    'astro:page-load',
+    () => {
+      const mainContainer = document.querySelector('.main-container')
+      const moreDownButton = document.querySelector('.more-down-button')
+      const moreUpButton = document.querySelector('.more-up-button')
+
+      if (!mainContainer || !moreDownButton || !moreUpButton) {
+        console.error(
+          'One or more elements could not be found in the document.'
+        )
+        return
+      }
+
+      let lastScrollTop = 0
+
+      const handleScroll = () => {
+        const { scrollTop, scrollHeight, clientHeight } = mainContainer
+        const atTop = scrollTop === 0
+        const atBottom = scrollTop + clientHeight >= scrollHeight
+        const scrollingUp = scrollTop < lastScrollTop
+
+        console.log('atTop', atTop)
+        console.log('scrollTop', scrollTop)
+
+        if (scrollingUp) {
+          moreDownButton.classList.remove('invisible')
+        }
+        if (!atTop) {
+          moreUpButton.classList.remove('invisible')
+        }
+        if (atTop) {
+          moreUpButton.classList.add('invisible')
+        }
+        if (atBottom) {
+          moreDownButton.classList.add('invisible')
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop
+      }
+
+      mainContainer.addEventListener('scroll', handleScroll)
+    },
+    { once: true }
+  )
+</script>

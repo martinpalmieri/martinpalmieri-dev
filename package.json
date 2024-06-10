@@ -1,26 +1,24 @@
 {
-  "private": true,
-  "license": "MIT",
+  "name": "martinpalmieri-dev",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "build:gen-rss": "node ./scripts/gen-rss.js && next build",
-    "start": "next start"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
   },
+  "author": "Martin Palmieri",
+  "license": "ISC",
   "dependencies": {
-    "gray-matter": "^4.0.2",
-    "next": "12.0.8",
-    "nextra": "^2.0.0-beta.5",
-    "nextra-theme-blog": "^2.0.0-beta.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "rss": "^1.2.2"
-  },
-  "prettier": {
-    "arrowParens": "always",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "none",
-    "semi": false
+    "@astrojs/react": "^3.4.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "astro": "^4.9.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.3"
   }
 }

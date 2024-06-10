@@ -1,0 +1,72 @@
+[
+  {
+    "company": {
+      "name": "Royal Schiphol Group",
+      "img": ""
+    },
+    "startDate": "2023-05-01T00:00:00Z",
+    "endDate": null,
+    "title": "Frontend Developer",
+    "description": "I joined Schiphol to help with the migration from a PHP-based ecosystem to a modern React/Remix stack. With this objective we aimed to improve performance, user and developer experience."
+  },
+  {
+    "company": {
+      "name": "Typeform",
+      "img": ""
+    },
+    "startDate": "2022-04-01T00:00:00Z",
+    "endDate": "2023-04-01T00:00:00Z",
+    "title": "Engineering Manager",
+    "description": "I led a team of 5 engineers, fostering collaboration for efficient project delivery. I developed individual plans to engage team members, implemented retention strategies, and maintained communication channels. I worked with Product Managers to refine requirements, emphasized scalable solutions, and used data-driven approaches to track progress and mitigate risks."
+  },
+  {
+    "company": {
+      "name": "Foleon",
+      "img": ""
+    },
+    "startDate": "2021-07-01T00:00:00Z",
+    "endDate": "2022-04-01T00:00:00Z",
+    "title": "Frontend Lead",
+    "description": "I oversaw the professional growth of 12 frontend developers, led talent acquisition, and maintained code quality standards. I provided coaching, facilitated team communication, and ensured project alignment. I prioritized team well-being, addressing challenges and fostering a supportive work environment."
+  },
+  {
+    "company": {
+      "name": "Foleon",
+      "img": ""
+    },
+    "startDate": "2019-05-01T00:00:00Z",
+    "endDate": "2021-07-01T00:00:00Z",
+    "title": "Frontend Developer",
+    "description": "Contributed to multiple Foleon projects, adapting to evolving needs. Developed frontend solutions with React, maintained a legacy Angular.js project, and ensured code quality and best practices. Utilized JavaScript, TypeScript, React, Redux, Webpack, HTML5, and Immerjs for robust solutions."
+  },
+  {
+    "company": {
+      "name": "Novility",
+      "img": ""
+    },
+    "startDate": "2018-11-01T00:00:00Z",
+    "endDate": "2019-05-01T00:00:00Z",
+    "title": "Frontend Developer",
+    "description": "As a Senior Frontend Developer at Novility, I led the development of frontend components for a new project, collaborating closely with another developer. I transitioned the project to Angular 7, utilizing the latest technologies. I made key frontend decisions, developed responsive interfaces, and ensured seamless integration with backend systems."
+  },
+  {
+    "company": {
+      "name": "Amaris",
+      "img": ""
+    },
+    "startDate": "2017-05-01T00:00:00Z",
+    "endDate": "2018-10-01T00:00:00Z",
+    "title": "Frontend Developer",
+    "description": "As a Frontend Developer at AXA Group Solutions within Amaris, I worked on two primary projects and assisted other teams. I collaborated with cross-functional teams to deliver high-quality frontend solutions, ensured seamless integration with backend systems, and maintained code quality through reviews and best practices."
+  },
+  {
+    "company": {
+      "name": "Globant",
+      "img": ""
+    },
+    "startDate": "2015-10-01T00:00:00Z",
+    "endDate": "2017-05-01T00:00:00Z",
+    "title": "Frontend Developer",
+    "description": "Worked in the development of a Deloitte project, transitioning from Angular 1.x to Angular 2. Provided knowledge transfer to new frontend developers and managed change requests and bug fixing for project stability."
+  }
+]
