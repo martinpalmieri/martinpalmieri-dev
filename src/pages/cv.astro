@@ -2,7 +2,7 @@
 import workExperience from "../data/work-experience.json";
 import { formatISODate } from "../utils/date-formatter";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ShowMoreExperiences from "../components/ShowMoreExperiences.astro";
+import ArrowIcon from "../components/ArrowIcon.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
@@ -51,7 +51,8 @@ const formattedExperienceData = formatExperienceData(workExperience);
       )
     }
   </main>
-  <ShowMoreExperiences />
+  <ArrowIcon direction="up" />
+  <ArrowIcon direction="down" />
   <Footer />
 </BaseLayout>
 
@@ -60,8 +61,8 @@ const formattedExperienceData = formatExperienceData(workExperience);
     "astro:page-load",
     () => {
       const mainContainer = document.querySelector(".main-container");
-      const moreDownButton = document.querySelector(".more-down-button");
-      const moreUpButton = document.querySelector(".more-up-button");
+      const moreDownButton = document.querySelector(".more-down");
+      const moreUpButton = document.querySelector(".more-up");
 
       if (!mainContainer || !moreDownButton || !moreUpButton) {
         console.error(
@@ -77,9 +78,6 @@ const formattedExperienceData = formatExperienceData(workExperience);
         const atTop = scrollTop === 0;
         const atBottom = scrollTop + clientHeight >= scrollHeight;
         const scrollingUp = scrollTop < lastScrollTop;
-
-        console.log("atTop", atTop);
-        console.log("scrollTop", scrollTop);
 
         if (scrollingUp) {
           moreDownButton.classList.remove("invisible");
