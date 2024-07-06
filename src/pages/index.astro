@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro'
-import { Image } from 'astro:assets'
-import profilePic from '../assets/martin-palmieri-profile.jpeg'
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+import profilePic from "../assets/martin-palmieri-profile.jpg";
 ---
 
 <BaseLayout>
@@ -18,9 +18,12 @@ import profilePic from '../assets/martin-palmieri-profile.jpeg'
         <h1 class="font-title text-2xl mb-1">Hello there.</h1>
         <h3 class="text-xl">I'm Mart&iacute;n.</h3>
         <p class="text-xl">I'm a Senior Software Engineer.</p>
-        <p class="text-xl">
-          Wanna check <a class="font-bold hover:underline" href="/cv">my cv</a>?
-        </p>
+        <a
+          class="border border-white transition ease-linear delay-100 text-white hover:bg-white hover:text-slate-950 font-bold py-2 px-4 rounded inline-flex items-center mt-6"
+          href="/cv"
+        >
+          Check my cv &rsaquo;
+        </a>
       </div>
     </div>
   </section>
