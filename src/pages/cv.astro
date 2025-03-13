@@ -31,7 +31,7 @@ const formattedExperienceData = formatExperienceData(workExperience);
         ({ company, title, startDate, endDate, description }) => {
           return (
             <section
-              class="w-full h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-center flex flex-col lg:flex-row items-center justify-center px-6 md:px-10 lg:px-16"
+              class="w-full h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-center flex flex-col lg:flex-row items-start pt-10 px-6 md:px-10 lg:px-16"
             >
               <div class="w-full mb-4 lg:w-1/2 lg:mb-0 lg:pr-8">
                 <h1 class="font-title text-4xl md:text-6xl lg:text-8xl">{company.name}</h1>
@@ -75,11 +75,11 @@ const formattedExperienceData = formatExperienceData(workExperience);
         return;
       }
 
-      // Initialize arrow visibility based on initial scroll position
-      const initializeArrows = () => {
+      // Function to update arrow visibility based on scroll position
+      const updateArrowVisibility = () => {
         const { scrollTop, scrollHeight, clientHeight } = mainContainer;
-        const atTop = scrollTop === 0;
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 5; // Small tolerance for rounding errors
+        const atTop = scrollTop < 10; // Small tolerance for iOS
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 10; // Small tolerance for iOS
         
         // Hide up arrow if at the top
         if (atTop) {
@@ -96,30 +96,25 @@ const formattedExperienceData = formatExperienceData(workExperience);
         }
       };
 
+      // Initialize arrow visibility based on initial scroll position
+      const initializeArrows = () => {
+        updateArrowVisibility();
+      };
+
       let lastScrollTop = 0;
       let isScrolling = false;
 
       const handleScroll = () => {
         if (isScrolling) return;
         
-        const { scrollTop, scrollHeight, clientHeight } = mainContainer;
-        const atTop = scrollTop === 0;
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 5; // Small tolerance for rounding errors
+        const { scrollTop } = mainContainer;
         const scrollingUp = scrollTop < lastScrollTop;
 
         if (scrollingUp) {
           moreDownButton.classList.remove("invisible");
         }
-        if (!atTop) {
-          moreUpButton.classList.remove("invisible");
-        }
-        if (atTop) {
-          moreUpButton.classList.add("invisible");
-        }
-        if (atBottom) {
-          moreDownButton.classList.add("invisible");
-        }
-
+        
+        updateArrowVisibility();
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
       };
 
@@ -136,8 +131,9 @@ const formattedExperienceData = formatExperienceData(workExperience);
           behavior: "smooth"
         });
         
-        // Reset isScrolling after animation completes
+        // Update arrow visibility after scrolling completes
         setTimeout(() => {
+          updateArrowVisibility();
           isScrolling = false;
         }, 500);
       };
@@ -155,8 +151,9 @@ const formattedExperienceData = formatExperienceData(workExperience);
           behavior: "smooth"
         });
         
-        // Reset isScrolling after animation completes
+        // Update arrow visibility after scrolling completes
         setTimeout(() => {
+          updateArrowVisibility();
           isScrolling = false;
         }, 500);
       };
