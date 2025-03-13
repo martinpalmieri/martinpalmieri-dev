@@ -1,13 +1,23 @@
 [
   {
     "company": {
+      "name": "Bird",
+      "img": ""
+    },
+    "startDate": "2024-08-01T00:00:00Z",
+    "endDate": null,
+    "title": "Hands-on Team Lead / Senior Frontend Developer",
+    "description": "Leading the Bird Inbox team while remaining hands-on in frontend development. Responsible for roadmap decisions, customer interactions, and driving product improvements. Focused on delivering scalable and efficient solutions for Bird AI CRM."
+  },
+  {
+    "company": {
       "name": "Royal Schiphol Group",
       "img": ""
     },
     "startDate": "2023-05-01T00:00:00Z",
-    "endDate": null,
-    "title": "Frontend Developer",
-    "description": "I joined Schiphol to help with the migration from a PHP-based ecosystem to a modern React/Remix stack. With this objective we aimed to improve performance, user and developer experience."
+    "endDate": "2024-08-01T00:00:00Z",
+    "title": "Senior Frontend Developer",
+    "description": "Led the migration of legacy PHP applications to a modern React/Remix stack within the Premium Services team. Improved performance, developer experience, and maintainability across multiple applications."
   },
   {
     "company": {
@@ -17,7 +27,7 @@
     "startDate": "2022-04-01T00:00:00Z",
     "endDate": "2024-01-01T00:00:00Z",
     "title": "Engineering Manager",
-    "description": "I led a team of 5 engineers, fostering collaboration for efficient project delivery. I developed individual plans to engage team members, implemented retention strategies, and maintained communication channels. I worked with Product Managers to refine requirements, emphasized scalable solutions, and used data-driven approaches to track progress and mitigate risks."
+    "description": "Managed a team of 5 engineers, fostering collaboration and efficient project delivery. Developed individual growth plans, implemented retention strategies, and worked closely with Product Managers to refine requirements. Focused on scalable solutions and data-driven approaches to track progress and mitigate risks."
   },
   {
     "company": {
@@ -27,7 +37,7 @@
     "startDate": "2021-07-01T00:00:00Z",
     "endDate": "2022-04-01T00:00:00Z",
     "title": "Frontend Lead",
-    "description": "I oversaw the professional growth of 12 frontend developers, led talent acquisition, and maintained code quality standards. I provided coaching, facilitated team communication, and ensured project alignment. I prioritized team well-being, addressing challenges and fostering a supportive work environment."
+    "description": "Led and mentored a team of 12 frontend developers, establishing best practices and ensuring code quality. Focused on talent acquisition, professional development, and maintaining a productive, supportive team environment."
   },
   {
     "company": {
@@ -36,8 +46,8 @@
     },
     "startDate": "2019-05-01T00:00:00Z",
     "endDate": "2021-07-01T00:00:00Z",
-    "title": "Frontend Developer",
-    "description": "Contributed to multiple Foleon projects, adapting to evolving needs. Developed frontend solutions with React, maintained a legacy Angular.js project, and ensured code quality and best practices. Utilized JavaScript, TypeScript, React, Redux, Webpack, HTML5, and Immerjs for robust solutions."
+    "title": "Senior Frontend Developer",
+    "description": "Contributed to multiple projects, developing React-based solutions while maintaining a legacy Angular.js application. Ensured high-quality code standards and best practices across frontend development."
   },
   {
     "company": {
@@ -46,8 +56,8 @@
     },
     "startDate": "2018-11-01T00:00:00Z",
     "endDate": "2019-05-01T00:00:00Z",
-    "title": "Frontend Developer",
-    "description": "As a Senior Frontend Developer at Novility, I led the development of frontend components for a new project, collaborating closely with another developer. I transitioned the project to Angular 7, utilizing the latest technologies. I made key frontend decisions, developed responsive interfaces, and ensured seamless integration with backend systems."
+    "title": "Senior Frontend Developer",
+    "description": "Led frontend development for a new project, transitioning it to Angular 7. Designed and implemented responsive interfaces, collaborated closely with backend teams, and made key technical decisions to ensure seamless integration."
   },
   {
     "company": {
@@ -56,8 +66,8 @@
     },
     "startDate": "2017-05-01T00:00:00Z",
     "endDate": "2018-10-01T00:00:00Z",
-    "title": "Frontend Developer",
-    "description": "As a Frontend Developer at AXA Group Solutions within Amaris, I worked on two primary projects and assisted other teams. I collaborated with cross-functional teams to deliver high-quality frontend solutions, ensured seamless integration with backend systems, and maintained code quality through reviews and best practices."
+    "title": "Senior Frontend Developer / Consultant",
+    "description": "Worked on core projects for AXA Group Solutions, collaborating with cross-functional teams to deliver scalable frontend solutions. Ensured seamless integration with backend systems and maintained high code quality through reviews and best practices."
   },
   {
     "company": {
@@ -66,7 +76,7 @@
     },
     "startDate": "2015-10-01T00:00:00Z",
     "endDate": "2017-05-01T00:00:00Z",
-    "title": "Frontend Developer",
-    "description": "Worked in the development of a Deloitte project, transitioning from Angular 1.x to Angular 2. Provided knowledge transfer to new frontend developers and managed change requests and bug fixing for project stability."
+    "title": "Senior Frontend Developer",
+    "description": "Led the migration from Angular 1.x to Angular 2 for a Deloitte project, overseeing technical decisions and implementation. Provided knowledge transfer to new developers and maintained project stability through change requests and bug fixes."
   }
 ]

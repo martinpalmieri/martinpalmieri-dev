@@ -13,15 +13,21 @@ const getSvgPath = (direction: "up" | "down") => {
   }
   return "";
 };
+
+const ariaLabel = direction === "up" ? "Navigate to previous experience" : "Navigate to next experience";
 ---
 
-<svg
-  class={`animate-bounce w-7 h-7 lg:w-10 lg:h-10 absolute ${direction === "up" ? "bottom-10 invisible more-up" : "bottom-2 more-down"}`}
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
-  fill="currentColor"
-  aria-hidden="true"
+<button 
+  class={`bg-transparent border-none p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full ${direction === "up" ? "top-[-40px] invisible more-up" : "top-0 more-down"} absolute`}
+  aria-label={ariaLabel}
 >
-  <path fill-rule="evenodd" d={getSvgPath(direction)} clip-rule="evenodd"
-  ></path>
-</svg>
+  <svg
+    class={`animate-bounce w-7 h-7 lg:w-10 lg:h-10 cursor-pointer`}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path fill-rule="evenodd" d={getSvgPath(direction)} clip-rule="evenodd"></path>
+  </svg>
+</button>

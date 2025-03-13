@@ -24,26 +24,28 @@ const formattedExperienceData = formatExperienceData(workExperience);
 <BaseLayout>
   <Header />
   <main
-    class={`h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-mandatory snap-y overflow-y-scroll scroll-smooth main-container`}
+    class="w-full h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-mandatory snap-y overflow-y-scroll scroll-smooth main-container"
   >
     {
       formattedExperienceData.map(
         ({ company, title, startDate, endDate, description }) => {
           return (
             <section
-              class={`h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-center flex flex-col lg:flex-row items-center pt-6`}
+              class="w-full h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-center flex flex-col lg:flex-row items-center justify-center px-6 md:px-10 lg:px-16"
             >
-              <div class="w-full mb-1 lg:w-1/2 lg:mb-0">
-                <h1 class="font-title text-3xl lg:text-8xl">{company.name}</h1>
+              <div class="w-full mb-4 lg:w-1/2 lg:mb-0 lg:pr-8">
+                <h1 class="font-title text-4xl md:text-6xl lg:text-8xl">{company.name}</h1>
               </div>
               <div class="w-full lg:w-1/2">
-                <h3 class="font-bold text-xl lg:text-3xl">
+                <h3 class="font-bold text-xl md:text-2xl lg:text-3xl text-gray-700">
                   {startDate} - {endDate}
                 </h3>
-                <h2 class="font-extrabold text-xl lg:text-5xl mb-2 lg:mg-4">
+                <h2 class="font-extrabold text-2xl md:text-4xl lg:text-5xl mb-3 lg:mb-4">
                   {title}
                 </h2>
-                <p class="font-normal text-lg lg:text-2xl">{description}</p>
+                <p class="font-normal text-lg md:text-xl lg:text-2xl leading-relaxed">
+                  {description}
+                </p>
               </div>
             </section>
           );
@@ -51,8 +53,10 @@ const formattedExperienceData = formatExperienceData(workExperience);
       )
     }
   </main>
-  <ArrowIcon direction="up" />
-  <ArrowIcon direction="down" />
+  <div class="fixed left-1/2 transform -translate-x-1/2 z-10 bottom-[100px] md:bottom-10">
+    <ArrowIcon direction="up" />
+    <ArrowIcon direction="down" />
+  </div>
   <Footer />
 </BaseLayout>
 
@@ -71,12 +75,36 @@ const formattedExperienceData = formatExperienceData(workExperience);
         return;
       }
 
-      let lastScrollTop = 0;
-
-      const handleScroll = () => {
+      // Initialize arrow visibility based on initial scroll position
+      const initializeArrows = () => {
         const { scrollTop, scrollHeight, clientHeight } = mainContainer;
         const atTop = scrollTop === 0;
-        const atBottom = scrollTop + clientHeight >= scrollHeight;
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 5; // Small tolerance for rounding errors
+        
+        // Hide up arrow if at the top
+        if (atTop) {
+          moreUpButton.classList.add("invisible");
+        } else {
+          moreUpButton.classList.remove("invisible");
+        }
+        
+        // Hide down arrow if at the bottom
+        if (atBottom) {
+          moreDownButton.classList.add("invisible");
+        } else {
+          moreDownButton.classList.remove("invisible");
+        }
+      };
+
+      let lastScrollTop = 0;
+      let isScrolling = false;
+
+      const handleScroll = () => {
+        if (isScrolling) return;
+        
+        const { scrollTop, scrollHeight, clientHeight } = mainContainer;
+        const atTop = scrollTop === 0;
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 5; // Small tolerance for rounding errors
         const scrollingUp = scrollTop < lastScrollTop;
 
         if (scrollingUp) {
@@ -95,7 +123,79 @@ const formattedExperienceData = formatExperienceData(workExperience);
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
       };
 
-      mainContainer.addEventListener("scroll", handleScroll);
+      // Function to scroll to the next section
+      const scrollToNextSection = () => {
+        if (isScrolling) return;
+        isScrolling = true;
+        
+        const { scrollTop, clientHeight } = mainContainer;
+        const targetScrollTop = Math.ceil(scrollTop / clientHeight) * clientHeight + clientHeight;
+        
+        mainContainer.scrollTo({
+          top: targetScrollTop,
+          behavior: "smooth"
+        });
+        
+        // Reset isScrolling after animation completes
+        setTimeout(() => {
+          isScrolling = false;
+        }, 500);
+      };
+
+      // Function to scroll to the previous section
+      const scrollToPreviousSection = () => {
+        if (isScrolling) return;
+        isScrolling = true;
+        
+        const { scrollTop, clientHeight } = mainContainer;
+        const targetScrollTop = Math.floor(scrollTop / clientHeight) * clientHeight - clientHeight;
+        
+        mainContainer.scrollTo({
+          top: targetScrollTop,
+          behavior: "smooth"
+        });
+        
+        // Reset isScrolling after animation completes
+        setTimeout(() => {
+          isScrolling = false;
+        }, 500);
+      };
+
+      // Handle keyboard navigation
+      const handleKeyDown = (event) => {
+        if (event.key === "ArrowDown" || event.key === "PageDown") {
+          event.preventDefault();
+          scrollToNextSection();
+        } else if (event.key === "ArrowUp" || event.key === "PageUp") {
+          event.preventDefault();
+          scrollToPreviousSection();
+        }
+      };
+
+      // Add click event listeners to the arrow buttons
+      moreDownButton.addEventListener("click", scrollToNextSection);
+      moreUpButton.addEventListener("click", scrollToPreviousSection);
+      
+      // Add keyboard navigation
+      document.addEventListener("keydown", handleKeyDown);
+      
+      // Add scroll event listener with debounce for better performance
+      let scrollTimeout;
+      mainContainer.addEventListener("scroll", () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(handleScroll, 10);
+      });
+      
+      // Initialize arrow visibility
+      initializeArrows();
+      
+      // Clean up event listeners when component is destroyed
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+        mainContainer.removeEventListener("scroll", handleScroll);
+        moreDownButton.removeEventListener("click", scrollToNextSection);
+        moreUpButton.removeEventListener("click", scrollToPreviousSection);
+      };
     },
     { once: true }
   );
