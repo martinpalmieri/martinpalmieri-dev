@@ -3,14 +3,21 @@
   "version": "2.0.0",
   "description": "",
   "main": "index.js",
+  "author": "Martin Palmieri",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.18 <23"
+  },
+  "packageManager": "pnpm@9.12.3",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "lint": "eslint . --ext .js,.ts,.astro",
+    "format": "prettier -w ."
   },
-  "author": "Martin Palmieri",
-  "license": "ISC",
   "dependencies": {
     "@astrojs/react": "^3.4.0",
     "@astrojs/tailwind": "^5.1.0",
@@ -22,5 +29,14 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.8.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-astro": "^0.34.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-astro": "^0.14.0"
   }
 }

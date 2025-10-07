@@ -6,54 +6,55 @@ import ArrowIcon from "../components/ArrowIcon.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
-function formatExperienceData(data) {
-  return data.map((experience) => {
-    return {
-      ...experience,
-      startDate: formatISODate(experience.startDate),
-      endDate: experience.endDate
-        ? formatISODate(experience.endDate)
-        : "Present",
-    };
-  });
+interface WorkExperienceEntry {
+  company: {
+    name: string;
+    img: string;
+  };
+  startDate: string;
+  endDate: string | null;
+  title: string;
+  description: string;
 }
 
-const formattedExperienceData = formatExperienceData(workExperience);
+const formatExperienceData = (data: WorkExperienceEntry[]) =>
+  data.map((experience) => ({
+    ...experience,
+    startDate: formatISODate(experience.startDate),
+    endDate: experience.endDate ? formatISODate(experience.endDate) : "Present"
+  }));
+
+const formattedExperienceData = formatExperienceData(workExperience as WorkExperienceEntry[]);
 ---
 
-<BaseLayout>
+<BaseLayout title="Curriculum Vitae | Martín Palmieri" description="Professional experience and background of Martín Palmieri.">
   <Header />
   <main
-    class="w-full h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-mandatory snap-y overflow-y-scroll scroll-smooth main-container"
+    class="main-container h-[calc(100vh-62px)] w-full snap-y snap-mandatory overflow-y-scroll scroll-smooth lg:h-[calc(100vh-88px)]"
+    aria-label="Professional experience timeline"
   >
     {
       formattedExperienceData.map(
-        ({ company, title, startDate, endDate, description }) => {
-          return (
-            <section
-              class="w-full h-[calc(100vh-62px)] lg:h-[calc(100vh-88px)] snap-center flex flex-col lg:flex-row items-start pt-10 px-6 md:px-10 lg:px-16"
-            >
-              <div class="w-full mb-4 lg:w-1/2 lg:mb-0 lg:pr-8">
-                <h1 class="font-title text-4xl md:text-6xl lg:text-8xl">{company.name}</h1>
-              </div>
-              <div class="w-full lg:w-1/2">
-                <h3 class="font-bold text-xl md:text-2xl lg:text-3xl text-gray-700">
-                  {startDate} - {endDate}
-                </h3>
-                <h2 class="font-extrabold text-2xl md:text-4xl lg:text-5xl mb-3 lg:mb-4">
-                  {title}
-                </h2>
-                <p class="font-normal text-lg md:text-xl lg:text-2xl leading-relaxed">
-                  {description}
-                </p>
-              </div>
-            </section>
-          );
-        }
+        ({ company, title, startDate, endDate, description }) => (
+          <section
+            class="flex h-[calc(100vh-62px)] w-full snap-center flex-col items-start px-6 pt-10 md:px-10 lg:h-[calc(100vh-88px)] lg:flex-row"
+          >
+            <div class="mb-4 w-full lg:mb-0 lg:w-1/2 lg:pr-8">
+              <h1 class="font-title text-4xl md:text-6xl lg:text-8xl">{company.name}</h1>
+            </div>
+            <div class="w-full lg:w-1/2">
+              <h3 class="text-xl font-bold text-gray-700 md:text-2xl lg:text-3xl">
+                {startDate} - {endDate}
+              </h3>
+              <h2 class="mb-3 text-2xl font-extrabold md:text-4xl lg:mb-4 lg:text-5xl">{title}</h2>
+              <p class="text-lg font-normal leading-relaxed md:text-xl lg:text-2xl">{description}</p>
+            </div>
+          </section>
+        )
       )
     }
   </main>
-  <div class="fixed left-1/2 transform -translate-x-1/2 z-10 bottom-[100px] md:bottom-10">
+  <div class="fixed left-1/2 bottom-[100px] z-10 -translate-x-1/2 md:bottom-10">
     <ArrowIcon direction="up" />
     <ArrowIcon direction="down" />
   </div>
@@ -64,31 +65,26 @@ const formattedExperienceData = formatExperienceData(workExperience);
   document.addEventListener(
     "astro:page-load",
     () => {
-      const mainContainer = document.querySelector(".main-container");
-      const moreDownButton = document.querySelector(".more-down");
-      const moreUpButton = document.querySelector(".more-up");
+      const mainContainer = document.querySelector<HTMLElement>(".main-container");
+      const moreDownButton = document.querySelector<HTMLButtonElement>(".more-down");
+      const moreUpButton = document.querySelector<HTMLButtonElement>(".more-up");
 
       if (!mainContainer || !moreDownButton || !moreUpButton) {
-        console.error(
-          "One or more elements could not be found in the document."
-        );
+        console.error("One or more elements could not be found in the document.");
         return;
       }
 
-      // Function to update arrow visibility based on scroll position
       const updateArrowVisibility = () => {
         const { scrollTop, scrollHeight, clientHeight } = mainContainer;
-        const atTop = scrollTop < 10; // Small tolerance for iOS
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 10; // Small tolerance for iOS
-        
-        // Hide up arrow if at the top
+        const atTop = scrollTop < 10;
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
+
         if (atTop) {
           moreUpButton.classList.add("invisible");
         } else {
           moreUpButton.classList.remove("invisible");
         }
-        
-        // Hide down arrow if at the bottom
+
         if (atBottom) {
           moreDownButton.classList.add("invisible");
         } else {
@@ -96,70 +92,67 @@ const formattedExperienceData = formatExperienceData(workExperience);
         }
       };
 
-      // Initialize arrow visibility based on initial scroll position
-      const initializeArrows = () => {
-        updateArrowVisibility();
-      };
-
       let lastScrollTop = 0;
       let isScrolling = false;
+      let scrollTimeout: ReturnType<typeof setTimeout> | undefined;
 
       const handleScroll = () => {
-        if (isScrolling) return;
-        
+        if (isScrolling) {
+          return;
+        }
+
         const { scrollTop } = mainContainer;
         const scrollingUp = scrollTop < lastScrollTop;
 
         if (scrollingUp) {
           moreDownButton.classList.remove("invisible");
         }
-        
+
         updateArrowVisibility();
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
       };
 
-      // Function to scroll to the next section
       const scrollToNextSection = () => {
-        if (isScrolling) return;
+        if (isScrolling) {
+          return;
+        }
+
         isScrolling = true;
-        
         const { scrollTop, clientHeight } = mainContainer;
         const targetScrollTop = Math.ceil(scrollTop / clientHeight) * clientHeight + clientHeight;
-        
+
         mainContainer.scrollTo({
           top: targetScrollTop,
           behavior: "smooth"
         });
-        
-        // Update arrow visibility after scrolling completes
-        setTimeout(() => {
+
+        window.setTimeout(() => {
           updateArrowVisibility();
           isScrolling = false;
         }, 500);
       };
 
-      // Function to scroll to the previous section
       const scrollToPreviousSection = () => {
-        if (isScrolling) return;
+        if (isScrolling) {
+          return;
+        }
+
         isScrolling = true;
-        
         const { scrollTop, clientHeight } = mainContainer;
         const targetScrollTop = Math.floor(scrollTop / clientHeight) * clientHeight - clientHeight;
-        
+
         mainContainer.scrollTo({
           top: targetScrollTop,
           behavior: "smooth"
         });
-        
-        // Update arrow visibility after scrolling completes
-        setTimeout(() => {
+
+        window.setTimeout(() => {
           updateArrowVisibility();
           isScrolling = false;
         }, 500);
       };
 
-      // Handle keyboard navigation
-      const handleKeyDown = (event) => {
+      const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "ArrowDown" || event.key === "PageDown") {
           event.preventDefault();
           scrollToNextSection();
@@ -169,30 +162,37 @@ const formattedExperienceData = formatExperienceData(workExperience);
         }
       };
 
-      // Add click event listeners to the arrow buttons
+      const debouncedScrollHandler = () => {
+        if (scrollTimeout) {
+          window.clearTimeout(scrollTimeout);
+        }
+        scrollTimeout = window.setTimeout(handleScroll, 10);
+      };
+
       moreDownButton.addEventListener("click", scrollToNextSection);
       moreUpButton.addEventListener("click", scrollToPreviousSection);
-      
-      // Add keyboard navigation
       document.addEventListener("keydown", handleKeyDown);
-      
-      // Add scroll event listener with debounce for better performance
-      let scrollTimeout;
-      mainContainer.addEventListener("scroll", () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(handleScroll, 10);
-      });
-      
-      // Initialize arrow visibility
-      initializeArrows();
-      
-      // Clean up event listeners when component is destroyed
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-        mainContainer.removeEventListener("scroll", handleScroll);
+      mainContainer.addEventListener("scroll", debouncedScrollHandler, { passive: true });
+
+      updateArrowVisibility();
+
+      const cleanup = () => {
+        if (scrollTimeout) {
+          window.clearTimeout(scrollTimeout);
+        }
         moreDownButton.removeEventListener("click", scrollToNextSection);
         moreUpButton.removeEventListener("click", scrollToPreviousSection);
+        document.removeEventListener("keydown", handleKeyDown);
+        mainContainer.removeEventListener("scroll", debouncedScrollHandler);
       };
+
+      document.addEventListener(
+        "astro:before-swap",
+        () => {
+          cleanup();
+        },
+        { once: true }
+      );
     },
     { once: true }
   );
