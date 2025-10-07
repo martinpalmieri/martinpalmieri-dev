@@ -8,3 +8,4 @@
 - harden Astro layout metadata, routing SEO defaults, and accessibility helpers
 - integrate sitemap generation, improve robots.txt, and enable HTML compression
 - refresh CV page scrolling logic for stability and typed data formatting
+- align tooling with npm usage and add TypeScript dependency required by `astro check`

@@ -8,7 +8,7 @@
   "engines": {
     "node": ">=18.18 <23"
   },
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "npm@10.8.2",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -37,6 +37,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-astro": "^0.34.0",
     "prettier": "^3.3.3",
-    "prettier-plugin-astro": "^0.14.0"
+    "prettier-plugin-astro": "^0.14.0",
+    "typescript": "^5.5.4"
   }
 }

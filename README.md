@@ -24,3 +24,13 @@ Astro offers a unique approach to building websites by enabling the use of compo
 Your feedback is invaluable to me. Feel free to explore my website at martinpalmieri.dev and let me know your thoughts or suggestions for improvement.
 
 Thank you for visiting!
+
+## Development
+
+This project targets Node.js 20.11.1 (see `.nvmrc`). After installing dependencies with `npm install`, the most common workflows are:
+
+- `npm run dev` – start the local development server.
+- `npm run build` – generate the production build used for deployment.
+- `npm run preview` – preview the production build locally.
+- `npm run lint` – run ESLint across Astro, TypeScript, and JavaScript sources.
+- `npm run typecheck` – execute `astro check` for framework and TypeScript diagnostics.
