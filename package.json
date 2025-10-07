@@ -6,7 +6,7 @@
   "author": "Martin Palmieri",
   "license": "ISC",
   "engines": {
-    "node": ">=18.18 <23"
+    "node": "20.x"
   },
   "packageManager": "npm@10.8.2",
   "scripts": {
