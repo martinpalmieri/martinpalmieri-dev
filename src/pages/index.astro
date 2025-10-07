@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
-import profilePic from "../assets/martin-palmieri-profile.jpg";
+import profilePic from "../assets/martin-palmieri-profile.png";
 ---
 
 <BaseLayout>
@@ -9,7 +9,7 @@ import profilePic from "../assets/martin-palmieri-profile.jpg";
     <div class="flex flex-col justify-center">
       <Image
         src={profilePic}
-        class="relative top-10 left-12 z-50 h-48 w-48 rounded-lg"
+        class="rounded-lg w-48 h-48 relative top-3 left-0 z-50"
         alt="This is me: Martin Palmieri - 2024 profile pic"
         loading="eager"
       />
