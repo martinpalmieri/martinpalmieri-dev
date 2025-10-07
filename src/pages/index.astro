@@ -5,22 +5,20 @@ import profilePic from "../assets/martin-palmieri-profile.jpg";
 ---
 
 <BaseLayout>
-  <section class={`h-screen flex items-center justify-center`}>
+  <section class="flex h-screen items-center justify-center">
     <div class="flex flex-col justify-center">
       <Image
         src={profilePic}
-        class="rounded-lg w-48 h-48 relative top-10 left-12 z-50"
+        class="relative top-10 left-12 z-50 h-48 w-48 rounded-lg"
         alt="This is me: Martin Palmieri - 2024 profile pic"
         loading="eager"
       />
-      <div
-        class="bg-slate-950 px-12 py-16 text-white mb-12 rounded-sm rounded-br-[32px]"
-      >
-        <h1 class="font-title text-2xl mb-1">Hello there.</h1>
+      <div class="mb-12 rounded-sm rounded-br-[32px] bg-slate-950 px-12 py-16 text-white">
+        <h1 class="font-title mb-1 text-2xl">Hello there.</h1>
         <h3 class="text-xl">I'm Mart&iacute;n.</h3>
         <p class="text-xl">I'm a Senior Software Engineer.</p>
         <a
-          class="border border-white transition ease-linear delay-100 text-white hover:bg-white hover:text-slate-950 font-bold py-2 px-4 rounded inline-flex items-center mt-6"
+          class="mt-6 inline-flex items-center rounded border border-white px-4 py-2 font-bold text-white transition delay-100 ease-linear hover:bg-white hover:text-slate-950"
           href="/cv"
         >
           Check my cv &rsaquo;

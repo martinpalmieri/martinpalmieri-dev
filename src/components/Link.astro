@@ -1,14 +1,17 @@
 ---
-interface Link {
-  path: string
-  label: string
+interface LinkProps {
+  href: string;
+  label: string;
 }
 
-const { href, label } = Astro.props
+const { href, label } = Astro.props as LinkProps;
 ---
 
 <a
   class="font-medium text-sm lg:text-xl hover:underline"
   href={href}
-  target="_blank">{label}</a
+  target="_blank"
+  rel="noopener noreferrer"
 >
+  {label}
+</a>

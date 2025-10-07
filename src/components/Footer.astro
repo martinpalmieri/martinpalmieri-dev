@@ -1,12 +1,19 @@
 ---
-import Link from './Link.astro'
+import Link from "./Link.astro";
 ---
 
-<footer class="flex space-x-2 fixed bottom-0 right-0 p-4 bg-white bg-opacity-80 z-10">
-  <Link href="https://www.linkedin.com/in/martinpalmieri/" label="LinkedIn" />
-  <Link href="https://github.com/martinpalmieri" label="GitHub" />
-  <Link
-    href="mailto:martinpalmieri@gmail.com"
-    label="martinpalmieri@gmail.com"
-  />
+<footer class="fixed bottom-0 right-0 z-10 bg-white bg-opacity-80 p-4">
+  <nav aria-label="Social media and contact links">
+    <ul class="flex space-x-2">
+      <li>
+        <Link href="https://www.linkedin.com/in/martinpalmieri/" label="LinkedIn" />
+      </li>
+      <li>
+        <Link href="https://github.com/martinpalmieri" label="GitHub" />
+      </li>
+      <li>
+        <Link href="mailto:martinpalmieri@gmail.com" label="martinpalmieri@gmail.com" />
+      </li>
+    </ul>
+  </nav>
 </footer>

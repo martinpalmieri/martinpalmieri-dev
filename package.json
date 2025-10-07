@@ -3,14 +3,19 @@
   "version": "2.0.0",
   "description": "",
   "main": "index.js",
+  "author": "Martin Palmieri",
+  "license": "ISC",
+  "engines": {
+    "node": "20.x"
+  },
+  "packageManager": "npm@10.8.2",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "typecheck": "node ./scripts/typecheck.mjs"
   },
-  "author": "Martin Palmieri",
-  "license": "ISC",
   "dependencies": {
     "@astrojs/react": "^3.4.0",
     "@astrojs/tailwind": "^5.1.0",
@@ -22,5 +27,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "file:vendor/astro-check",
+    "typescript": "file:vendor/typescript"
   }
 }
