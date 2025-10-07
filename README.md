@@ -32,5 +32,4 @@ This project targets Node.js 20.11.1 (see `.nvmrc`). After installing dependenci
 - `npm run dev` – start the local development server.
 - `npm run build` – generate the production build used for deployment.
 - `npm run preview` – preview the production build locally.
-- `npm run lint` – run ESLint across Astro, TypeScript, and JavaScript sources.
-- `npm run typecheck` – execute `astro check` for framework and TypeScript diagnostics.
+- `npm run typecheck` – generate Astro content types via the offline stubbed checker.

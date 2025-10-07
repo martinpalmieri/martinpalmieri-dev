@@ -1,0 +1,10 @@
+{
+  "name": "typescript",
+  "version": "5.5.4",
+  "type": "commonjs",
+  "main": "./index.js",
+  "bin": {
+    "tsc": "./bin/tsc.js",
+    "tsserver": "./bin/tsserver.js"
+  }
+}

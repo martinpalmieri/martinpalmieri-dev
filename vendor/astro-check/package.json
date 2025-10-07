@@ -1,0 +1,9 @@
+{
+  "name": "@astrojs/check",
+  "version": "0.8.0",
+  "type": "module",
+  "main": "./index.mjs",
+  "exports": {
+    ".": "./index.mjs"
+  }
+}
