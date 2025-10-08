@@ -66,8 +66,12 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
     "astro:page-load",
     () => {
       const mainContainer = document.querySelector<HTMLElement>(".main-container");
-      const moreDownButton = document.querySelector<HTMLButtonElement>(".more-down");
-      const moreUpButton = document.querySelector<HTMLButtonElement>(".more-up");
+      const moreDownButton = document.querySelector<HTMLButtonElement>(
+        '[data-direction="down"]'
+      );
+      const moreUpButton = document.querySelector<HTMLButtonElement>(
+        '[data-direction="up"]'
+      );
 
       if (!mainContainer || !moreDownButton || !moreUpButton) {
         console.error("One or more elements could not be found in the document.");
@@ -84,12 +88,13 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
       }
 
       const getCurrentSectionIndex = () => {
-        const { scrollTop } = mainContainer;
+        const containerRect = mainContainer.getBoundingClientRect();
         let closestIndex = 0;
         let smallestDistance = Number.POSITIVE_INFINITY;
 
         sections.forEach((section, index) => {
-          const distance = Math.abs(section.offsetTop - scrollTop);
+          const sectionRect = section.getBoundingClientRect();
+          const distance = Math.abs(sectionRect.top - containerRect.top);
 
           if (distance < smallestDistance) {
             smallestDistance = distance;
@@ -125,9 +130,9 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
           return;
         }
 
-        mainContainer.scrollTo({
-          top: targetSection.offsetTop,
-          behavior: "smooth"
+        targetSection.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
         });
 
         window.requestAnimationFrame(() => {
@@ -176,8 +181,25 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
         });
       };
 
-      moreDownButton.addEventListener("click", scrollToNextSection);
-      moreUpButton.addEventListener("click", scrollToPreviousSection);
+      const handleArrowClick = (event: MouseEvent) => {
+        const target = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>(
+          "[data-experience-nav]"
+        );
+
+        if (!target) {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (target.dataset.direction === "down") {
+          scrollToNextSection();
+        } else {
+          scrollToPreviousSection();
+        }
+      };
+
+      document.addEventListener("click", handleArrowClick);
       document.addEventListener("keydown", handleKeyDown);
       mainContainer.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -189,8 +211,7 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
           scrollAnimationFrame = undefined;
         }
 
-        moreDownButton.removeEventListener("click", scrollToNextSection);
-        moreUpButton.removeEventListener("click", scrollToPreviousSection);
+        document.removeEventListener("click", handleArrowClick);
         document.removeEventListener("keydown", handleKeyDown);
         mainContainer.removeEventListener("scroll", handleScroll);
       };
