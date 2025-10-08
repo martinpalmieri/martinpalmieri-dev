@@ -1,0 +1,425 @@
+---
+const headingId = "contact-modal-title";
+const descriptionId = "contact-modal-description";
+---
+
+<div
+  class="fixed inset-0 z-40 hidden flex items-center justify-center bg-black/70 px-4 py-8 opacity-0 transition-opacity duration-300 ease-out"
+  data-contact-modal-overlay
+  aria-hidden="true"
+>
+  <div class="absolute inset-0" data-contact-modal-backdrop></div>
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby={headingId}
+    aria-describedby={descriptionId}
+    class="relative z-10 w-full max-w-xl rounded-3xl bg-white p-8 text-black shadow-2xl transition-all duration-300 ease-out transform opacity-0 scale-95"
+    data-contact-modal-panel
+  >
+    <button
+      type="button"
+      class="absolute right-4 top-4 rounded-full border border-black/20 p-2 text-sm font-semibold uppercase tracking-wide text-black transition hover:bg-black hover:text-white"
+      data-contact-modal-close
+      aria-label="Close contact form"
+    >
+      ✕
+    </button>
+
+    <div class="space-y-2">
+      <p class="text-sm uppercase tracking-[0.3em] text-black/60">Let's connect</p>
+      <h2 id={headingId} class="font-title text-3xl md:text-4xl">Contact</h2>
+      <p id={descriptionId} class="text-sm md:text-base text-black/70">
+        Fill out the form and I'll get back to you as soon as possible.
+      </p>
+    </div>
+
+    <form class="mt-6 space-y-5" novalidate data-contact-form>
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold uppercase tracking-[0.3em] text-black/60" for="contact-name">
+          Name
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          type="text"
+          required
+          minlength="1"
+          placeholder="Your name"
+          class="w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-base text-black outline-none transition placeholder:text-black/40 focus:border-black focus:bg-white"
+        />
+        <p class="hidden text-sm text-red-600" data-error-for="name"></p>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold uppercase tracking-[0.3em] text-black/60" for="contact-email">
+          Email
+        </label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          required
+          placeholder="you@example.com"
+          class="w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-base text-black outline-none transition placeholder:text-black/40 focus:border-black focus:bg-white"
+        />
+        <p class="hidden text-sm text-red-600" data-error-for="email"></p>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-xs font-semibold uppercase tracking-[0.3em] text-black/60" for="contact-message">
+          Message
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          required
+          minlength="5"
+          rows="5"
+          placeholder="Type your message"
+          class="w-full rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-base text-black outline-none transition placeholder:text-black/40 focus:border-black focus:bg-white"
+        ></textarea>
+        <p class="hidden text-sm text-red-600" data-error-for="message"></p>
+      </div>
+
+      <div class="space-y-3">
+        <button
+          type="submit"
+          class="w-full rounded-full bg-black px-6 py-3 text-base font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white hover:text-black hover:outline hover:outline-1 hover:outline-black disabled:pointer-events-none disabled:opacity-60"
+          data-contact-submit
+        >
+          Send
+        </button>
+        <p class="hidden text-center text-sm font-medium text-green-600" data-contact-success>
+          Thank you! Your message has been sent.
+        </p>
+        <p class="hidden text-center text-sm font-medium text-red-600" data-contact-error></p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  class="pointer-events-none fixed bottom-6 right-6 z-50 hidden translate-y-4 rounded-2xl bg-black px-4 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white opacity-0 shadow-2xl transition-all duration-300"
+  role="status"
+  aria-live="polite"
+  data-contact-toast
+>
+  Message sent successfully
+</div>
+
+<script is:inline data-astro-rerun>
+  (() => {
+    const stateKey = '__contactModalState';
+    const previousState = window[stateKey];
+
+    if (previousState && typeof previousState.destroy === 'function') {
+      previousState.destroy();
+    }
+
+    const overlay = document.querySelector('[data-contact-modal-overlay]');
+    const toast = document.querySelector('[data-contact-toast]');
+
+    if (!(overlay instanceof HTMLElement)) {
+      window[stateKey] = {
+        destroy() {},
+      };
+      return;
+    }
+
+    const panel = overlay.querySelector('[data-contact-modal-panel]');
+    const backdrop = overlay.querySelector('[data-contact-modal-backdrop]');
+    const form = overlay.querySelector('[data-contact-form]');
+    const successMessage = overlay.querySelector('[data-contact-success]');
+    const errorMessage = overlay.querySelector('[data-contact-error]');
+    const submitButton = overlay.querySelector('[data-contact-submit]');
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const submissionEndpoint = 'https://formsubmit.co/ajax/martinpalmieri@gmail.com';
+
+    let activeTrigger = null;
+    let closeTimer = null;
+    let toastTimer = null;
+    let hasOpenListener = false;
+
+    const showToast = () => {
+      if (!(toast instanceof HTMLElement)) return;
+      toast.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-4');
+        toast.classList.add('opacity-100', 'translate-y-0');
+      });
+
+      if (toastTimer) {
+        window.clearTimeout(toastTimer);
+      }
+
+      toastTimer = window.setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-4');
+        const handleToastTransition = (event) => {
+          if (event.target === toast) {
+            toast.classList.add('hidden');
+          }
+        };
+        toast.addEventListener('transitionend', handleToastTransition, { once: true });
+      }, 4000);
+    };
+
+    const openModal = (trigger) => {
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+
+      overlay.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        overlay.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('opacity-100');
+        panel?.classList.add('opacity-100', 'scale-100');
+      });
+
+      activeTrigger = trigger instanceof HTMLElement ? trigger : null;
+
+      const firstField = form?.querySelector('input, textarea');
+      if (firstField instanceof HTMLElement) {
+        window.setTimeout(() => firstField.focus(), 200);
+      }
+    };
+
+    const closeModal = () => {
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.classList.remove('opacity-100');
+      panel?.classList.remove('opacity-100', 'scale-100');
+
+      const handleTransitionEnd = (event) => {
+        if (event.target === overlay) {
+          overlay.classList.add('hidden');
+          if (activeTrigger instanceof HTMLElement) {
+            activeTrigger.focus();
+          }
+        }
+      };
+
+      overlay.addEventListener('transitionend', handleTransitionEnd, { once: true });
+    };
+
+    const resetFormState = () => {
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+
+      successMessage?.classList.add('hidden');
+
+      if (errorMessage) {
+        errorMessage.textContent = '';
+        errorMessage.classList.add('hidden');
+      }
+
+      if (submitButton instanceof HTMLButtonElement) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send';
+      }
+
+      if (!form) return;
+
+      const fields = form.querySelectorAll('input, textarea');
+      fields.forEach((field) => {
+        const error = overlay.querySelector(`[data-error-for="${field.name}"]`);
+        if (error) {
+          error.textContent = '';
+          error.classList.add('hidden');
+        }
+        field.classList.remove('border-red-500');
+      });
+    };
+
+    const setSubmittingState = (isSubmitting) => {
+      if (!(submitButton instanceof HTMLButtonElement)) return;
+      submitButton.disabled = isSubmitting;
+      submitButton.textContent = isSubmitting ? 'Sending…' : 'Send';
+    };
+
+    const validateFields = () => {
+      if (!form) return false;
+
+      let isValid = true;
+      const fields = form.querySelectorAll('input, textarea');
+      fields.forEach((field) => {
+        const error = overlay.querySelector(`[data-error-for="${field.name}"]`);
+        if (!error) return;
+
+        field.classList.remove('border-red-500');
+        error.textContent = '';
+        error.classList.add('hidden');
+
+        const value = 'value' in field ? field.value : '';
+        const trimmedValue = typeof value === 'string' ? value.trim() : '';
+
+        if ('value' in field && typeof field.value === 'string') {
+          field.value = trimmedValue;
+        }
+
+        let message = '';
+        if (field.name === 'name') {
+          if (!trimmedValue) {
+            message = 'Please enter your name.';
+          }
+        } else if (field.name === 'email') {
+          if (!trimmedValue) {
+            message = 'Please enter your email.';
+          } else if (!emailPattern.test(trimmedValue)) {
+            message = 'Please enter a valid email address.';
+          }
+        } else if (field.name === 'message') {
+          if (!trimmedValue) {
+            message = 'Please enter a message.';
+          } else if (trimmedValue.length < 5) {
+            message = 'Your message must be at least 5 characters long.';
+          }
+        }
+
+        if (message) {
+          isValid = false;
+          field.classList.add('border-red-500');
+          error.textContent = message;
+          error.classList.remove('hidden');
+        }
+      });
+
+      return isValid;
+    };
+
+    const handleDocumentClick = (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      const trigger = event.target.closest('[data-contact-modal-open]');
+
+      if (!(trigger instanceof HTMLElement)) return;
+
+      event.preventDefault();
+
+      if (overlay.getAttribute('aria-hidden') === 'false') {
+        return;
+      }
+
+      resetFormState();
+      form?.reset();
+      openModal(trigger);
+    };
+
+    const ensureOpenListener = () => {
+      if (hasOpenListener) return;
+      document.addEventListener('click', handleDocumentClick);
+      hasOpenListener = true;
+    };
+
+    const removeOpenListener = () => {
+      if (!hasOpenListener) return;
+      document.removeEventListener('click', handleDocumentClick);
+      hasOpenListener = false;
+    };
+
+    const handleOverlayClick = (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      if (event.target === overlay || event.target === backdrop) {
+        resetFormState();
+        closeModal();
+        return;
+      }
+
+      const closeTrigger = event.target.closest('[data-contact-modal-close]');
+      if (closeTrigger) {
+        event.preventDefault();
+        resetFormState();
+        closeModal();
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
+        resetFormState();
+        closeModal();
+      }
+    };
+
+    const handleSubmit = async (event) => {
+      if (!(form instanceof HTMLFormElement)) return;
+
+      event.preventDefault();
+
+      if (errorMessage) {
+        errorMessage.textContent = '';
+        errorMessage.classList.add('hidden');
+      }
+
+      const isValid = validateFields();
+      if (!isValid) {
+        return;
+      }
+
+      setSubmittingState(true);
+
+      try {
+        const formData = new FormData(form);
+        formData.append('_subject', 'New message from martinpalmieri.dev');
+        formData.append('_captcha', 'false');
+
+        const response = await fetch(submissionEndpoint, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Unable to submit form');
+        }
+
+        successMessage?.classList.remove('hidden');
+        form.reset();
+
+        closeTimer = window.setTimeout(() => {
+          resetFormState();
+          closeModal();
+          showToast();
+        }, 1800);
+      } catch (error) {
+        console.error(error);
+        if (errorMessage) {
+          errorMessage.textContent = 'Something went wrong. Please try again in a moment.';
+          errorMessage.classList.remove('hidden');
+        }
+      } finally {
+        setSubmittingState(false);
+      }
+    };
+
+    ensureOpenListener();
+    overlay.addEventListener('click', handleOverlayClick);
+    document.addEventListener('keydown', handleKeyDown);
+    form?.addEventListener('submit', handleSubmit);
+
+    const destroy = () => {
+      removeOpenListener();
+      overlay.removeEventListener('click', handleOverlayClick);
+      document.removeEventListener('keydown', handleKeyDown);
+      form?.removeEventListener('submit', handleSubmit);
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+      if (toastTimer) {
+        window.clearTimeout(toastTimer);
+        toastTimer = null;
+      }
+      document.removeEventListener('astro:before-swap', destroy);
+      window[stateKey] = undefined;
+    };
+
+    document.addEventListener('astro:before-swap', destroy, { once: true });
+
+    window[stateKey] = { destroy };
+  })();
+</script>

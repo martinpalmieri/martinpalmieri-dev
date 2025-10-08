@@ -20,12 +20,21 @@ import profilePic from "../assets/martin-palmieri-profile.png";
         <p class="max-w-xl text-lg md:text-2xl">
           Hands-on engineering leader building scalable customer experiences.
         </p>
-        <a
-          class="inline-flex w-fit items-center gap-2 rounded-full border border-black px-6 py-3 font-semibold tracking-wide transition text-white bg-black hover:bg-white hover:text-black"
-          href="/cv"
-        >
-          Check my cv &rsaquo;
-        </a>
+        <div class="flex flex-wrap gap-3">
+          <a
+            class="inline-flex items-center gap-2 rounded-full border border-black px-6 py-3 font-semibold tracking-wide transition text-white bg-black hover:bg-white hover:text-black"
+            href="/cv"
+          >
+            Check my cv &rsaquo;
+          </a>
+          <button
+            type="button"
+            data-contact-modal-open
+            class="inline-flex items-center gap-2 rounded-full border border-black px-6 py-3 font-semibold tracking-wide transition text-black bg-white hover:bg-black hover:text-white"
+          >
+            Contact me
+          </button>
+        </div>
       </div>
     </div>
   </section>
