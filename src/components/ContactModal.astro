@@ -85,35 +85,90 @@ const descriptionId = "contact-modal-description";
       <div class="space-y-3">
         <button
           type="submit"
-          class="w-full rounded-full bg-black px-6 py-3 text-base font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white hover:text-black hover:outline hover:outline-1 hover:outline-black"
+          class="w-full rounded-full bg-black px-6 py-3 text-base font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white hover:text-black hover:outline hover:outline-1 hover:outline-black disabled:pointer-events-none disabled:opacity-60"
+          data-contact-submit
         >
           Send
         </button>
         <p class="hidden text-center text-sm font-medium text-green-600" data-contact-success>
           Thank you! Your message has been sent.
         </p>
+        <p class="hidden text-center text-sm font-medium text-red-600" data-contact-error></p>
       </div>
     </form>
   </div>
 </div>
 
+<div
+  class="pointer-events-none fixed bottom-6 right-6 z-50 hidden translate-y-4 rounded-2xl bg-black px-4 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white opacity-0 shadow-2xl transition-all duration-300"
+  role="status"
+  aria-live="polite"
+  data-contact-toast
+>
+  Message sent successfully
+</div>
+
 <script is:inline>
   const overlay = document.querySelector('[data-contact-modal-overlay]');
+  const toast = document.querySelector('[data-contact-toast]');
+
   if (overlay) {
     const panel = overlay.querySelector('[data-contact-modal-panel]');
     const backdrop = overlay.querySelector('[data-contact-modal-backdrop]');
     const closeButtons = overlay.querySelectorAll('[data-contact-modal-close]');
     const form = overlay.querySelector('[data-contact-form]');
     const successMessage = overlay.querySelector('[data-contact-success]');
+    const errorMessage = overlay.querySelector('[data-contact-error]');
+    const submitButton = overlay.querySelector('[data-contact-submit]');
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const submissionEndpoint = 'https://formsubmit.co/ajax/martinpalmieri@gmail.com';
 
-    const openModal = () => {
+    let activeTrigger = null;
+    let closeTimer = null;
+    let toastTimer = null;
+
+    const showToast = () => {
+      if (!(toast instanceof HTMLElement)) return;
+      toast.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-4');
+        toast.classList.add('opacity-100', 'translate-y-0');
+      });
+
+      if (toastTimer) {
+        window.clearTimeout(toastTimer);
+      }
+
+      toastTimer = window.setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-4');
+        const handleToastTransition = (event) => {
+          if (event.target === toast) {
+            toast.classList.add('hidden');
+            toast.removeEventListener('transitionend', handleToastTransition);
+          }
+        };
+        toast.addEventListener('transitionend', handleToastTransition, { once: true });
+      }, 4000);
+    };
+
+    const openModal = (trigger) => {
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+      }
+
       overlay.classList.remove('hidden');
       requestAnimationFrame(() => {
         overlay.setAttribute('aria-hidden', 'false');
         overlay.classList.add('opacity-100');
         panel?.classList.add('opacity-100', 'scale-100');
       });
+
+      activeTrigger = trigger instanceof HTMLElement ? trigger : null;
+
+      const firstField = form?.querySelector('input, textarea');
+      if (firstField instanceof HTMLElement) {
+        setTimeout(() => firstField.focus(), 200);
+      }
     };
 
     const closeModal = () => {
@@ -125,6 +180,9 @@ const descriptionId = "contact-modal-description";
         if (event.target === overlay) {
           overlay.classList.add('hidden');
           overlay.removeEventListener('transitionend', handleTransitionEnd);
+          if (activeTrigger instanceof HTMLElement) {
+            activeTrigger.focus();
+          }
         }
       };
 
@@ -132,7 +190,19 @@ const descriptionId = "contact-modal-description";
     };
 
     const resetFormState = () => {
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
       successMessage?.classList.add('hidden');
+      if (errorMessage) {
+        errorMessage.textContent = '';
+        errorMessage.classList.add('hidden');
+      }
+      if (submitButton instanceof HTMLButtonElement) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send';
+      }
       if (!form) return;
       const fields = form.querySelectorAll('input, textarea');
       fields.forEach((field) => {
@@ -145,42 +215,14 @@ const descriptionId = "contact-modal-description";
       });
     };
 
-    document.querySelectorAll('[data-contact-modal-open]').forEach((trigger) => {
-      trigger.addEventListener('click', () => {
-        resetFormState();
-        form?.reset();
-        openModal();
-        const firstField = form?.querySelector('input, textarea');
-        if (firstField instanceof HTMLElement) {
-          setTimeout(() => firstField.focus(), 200);
-        }
-      });
-    });
-
-    closeButtons.forEach((button) =>
-      button.addEventListener('click', () => {
-        closeModal();
-      }),
-    );
-
-    const handleBackdropClick = (event) => {
-      if (event.target === backdrop || event.target === overlay) {
-        closeModal();
-      }
+    const setSubmittingState = (isSubmitting) => {
+      if (!(submitButton instanceof HTMLButtonElement)) return;
+      submitButton.disabled = isSubmitting;
+      submitButton.textContent = isSubmitting ? 'Sending…' : 'Send';
     };
 
-    backdrop?.addEventListener('click', handleBackdropClick);
-    overlay.addEventListener('click', handleBackdropClick);
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !overlay.classList.contains('hidden')) {
-        closeModal();
-      }
-    });
-
-    form?.addEventListener('submit', (event) => {
-      event.preventDefault();
-      if (!form) return;
+    const validateFields = () => {
+      if (!form) return false;
 
       let isValid = true;
       const fields = form.querySelectorAll('input, textarea');
@@ -225,9 +267,102 @@ const descriptionId = "contact-modal-description";
         }
       });
 
-      if (isValid) {
+      return isValid;
+    };
+
+    const handleOpenTriggers = (event) => {
+      if (!(event.currentTarget instanceof HTMLElement)) return;
+      resetFormState();
+      form?.reset();
+      openModal(event.currentTarget);
+    };
+
+    const registerTriggers = () => {
+      document.querySelectorAll('[data-contact-modal-open]').forEach((trigger) => {
+        if (trigger instanceof HTMLElement && !trigger.dataset.contactBound) {
+          trigger.dataset.contactBound = 'true';
+          trigger.addEventListener('click', handleOpenTriggers);
+        }
+      });
+    };
+
+    registerTriggers();
+    document.addEventListener('astro:after-swap', registerTriggers);
+    document.addEventListener('astro:page-load', registerTriggers);
+
+    closeButtons.forEach((button) =>
+      button.addEventListener('click', () => {
+        resetFormState();
+        closeModal();
+      }),
+    );
+
+    const handleBackdropClick = (event) => {
+      if (event.target === backdrop || event.target === overlay) {
+        resetFormState();
+        closeModal();
+      }
+    };
+
+    backdrop?.addEventListener('click', handleBackdropClick);
+    overlay.addEventListener('click', handleBackdropClick);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !overlay.classList.contains('hidden')) {
+        resetFormState();
+        closeModal();
+      }
+    });
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form) return;
+
+      if (errorMessage) {
+        errorMessage.textContent = '';
+        errorMessage.classList.add('hidden');
+      }
+
+      const isValid = validateFields();
+      if (!isValid) {
+        return;
+      }
+
+      setSubmittingState(true);
+
+      try {
+        const formData = new FormData(form);
+        formData.append('_subject', 'New message from martinpalmieri.dev');
+        formData.append('_captcha', 'false');
+
+        const response = await fetch(submissionEndpoint, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Unable to submit form');
+        }
+
         successMessage?.classList.remove('hidden');
         form.reset();
+
+        closeTimer = window.setTimeout(() => {
+          resetFormState();
+          closeModal();
+          showToast();
+        }, 1800);
+      } catch (error) {
+        console.error(error);
+        if (errorMessage) {
+          errorMessage.textContent = 'Something went wrong. Please try again in a moment.';
+          errorMessage.classList.remove('hidden');
+        }
+      } finally {
+        setSubmittingState(false);
       }
     });
   }
