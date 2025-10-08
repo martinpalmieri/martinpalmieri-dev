@@ -108,14 +108,27 @@ const descriptionId = "contact-modal-description";
   Message sent successfully
 </div>
 
-<script is:inline>
-  const overlay = document.querySelector('[data-contact-modal-overlay]');
-  const toast = document.querySelector('[data-contact-toast]');
+<script is:inline data-astro-rerun>
+  (() => {
+    const stateKey = '__contactModalState';
+    const previousState = window[stateKey];
 
-  if (overlay) {
+    if (previousState && typeof previousState.destroy === 'function') {
+      previousState.destroy();
+    }
+
+    const overlay = document.querySelector('[data-contact-modal-overlay]');
+    const toast = document.querySelector('[data-contact-toast]');
+
+    if (!(overlay instanceof HTMLElement)) {
+      window[stateKey] = {
+        destroy() {},
+      };
+      return;
+    }
+
     const panel = overlay.querySelector('[data-contact-modal-panel]');
     const backdrop = overlay.querySelector('[data-contact-modal-backdrop]');
-    const closeButtons = overlay.querySelectorAll('[data-contact-modal-close]');
     const form = overlay.querySelector('[data-contact-form]');
     const successMessage = overlay.querySelector('[data-contact-success]');
     const errorMessage = overlay.querySelector('[data-contact-error]');
@@ -126,6 +139,7 @@ const descriptionId = "contact-modal-description";
     let activeTrigger = null;
     let closeTimer = null;
     let toastTimer = null;
+    let hasOpenListener = false;
 
     const showToast = () => {
       if (!(toast instanceof HTMLElement)) return;
@@ -144,7 +158,6 @@ const descriptionId = "contact-modal-description";
         const handleToastTransition = (event) => {
           if (event.target === toast) {
             toast.classList.add('hidden');
-            toast.removeEventListener('transitionend', handleToastTransition);
           }
         };
         toast.addEventListener('transitionend', handleToastTransition, { once: true });
@@ -154,6 +167,7 @@ const descriptionId = "contact-modal-description";
     const openModal = (trigger) => {
       if (closeTimer) {
         window.clearTimeout(closeTimer);
+        closeTimer = null;
       }
 
       overlay.classList.remove('hidden');
@@ -167,7 +181,7 @@ const descriptionId = "contact-modal-description";
 
       const firstField = form?.querySelector('input, textarea');
       if (firstField instanceof HTMLElement) {
-        setTimeout(() => firstField.focus(), 200);
+        window.setTimeout(() => firstField.focus(), 200);
       }
     };
 
@@ -179,14 +193,13 @@ const descriptionId = "contact-modal-description";
       const handleTransitionEnd = (event) => {
         if (event.target === overlay) {
           overlay.classList.add('hidden');
-          overlay.removeEventListener('transitionend', handleTransitionEnd);
           if (activeTrigger instanceof HTMLElement) {
             activeTrigger.focus();
           }
         }
       };
 
-      overlay.addEventListener('transitionend', handleTransitionEnd);
+      overlay.addEventListener('transitionend', handleTransitionEnd, { once: true });
     };
 
     const resetFormState = () => {
@@ -194,16 +207,21 @@ const descriptionId = "contact-modal-description";
         window.clearTimeout(closeTimer);
         closeTimer = null;
       }
+
       successMessage?.classList.add('hidden');
+
       if (errorMessage) {
         errorMessage.textContent = '';
         errorMessage.classList.add('hidden');
       }
+
       if (submitButton instanceof HTMLButtonElement) {
         submitButton.disabled = false;
         submitButton.textContent = 'Send';
       }
+
       if (!form) return;
+
       const fields = form.querySelectorAll('input, textarea');
       fields.forEach((field) => {
         const error = overlay.querySelector(`[data-error-for="${field.name}"]`);
@@ -236,6 +254,7 @@ const descriptionId = "contact-modal-description";
 
         const value = 'value' in field ? field.value : '';
         const trimmedValue = typeof value === 'string' ? value.trim() : '';
+
         if ('value' in field && typeof field.value === 'string') {
           field.value = trimmedValue;
         }
@@ -270,8 +289,6 @@ const descriptionId = "contact-modal-description";
       return isValid;
     };
 
-    let hasOpenListener = false;
-
     const handleDocumentClick = (event) => {
       if (!(event.target instanceof Element)) return;
 
@@ -302,38 +319,34 @@ const descriptionId = "contact-modal-description";
       hasOpenListener = false;
     };
 
-    ensureOpenListener();
-    document.addEventListener('astro:after-swap', ensureOpenListener);
-    document.addEventListener('astro:page-load', ensureOpenListener);
-    document.addEventListener('astro:before-swap', removeOpenListener);
+    const handleOverlayClick = (event) => {
+      if (!(event.target instanceof Element)) return;
 
-    closeButtons.forEach((button) =>
-      button.addEventListener('click', () => {
+      if (event.target === overlay || event.target === backdrop) {
         resetFormState();
         closeModal();
-      }),
-    );
+        return;
+      }
 
-    const handleBackdropClick = (event) => {
-      if (event.target === backdrop || event.target === overlay) {
+      const closeTrigger = event.target.closest('[data-contact-modal-close]');
+      if (closeTrigger) {
+        event.preventDefault();
         resetFormState();
         closeModal();
       }
     };
 
-    backdrop?.addEventListener('click', handleBackdropClick);
-    overlay.addEventListener('click', handleBackdropClick);
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !overlay.classList.contains('hidden')) {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
         resetFormState();
         closeModal();
       }
-    });
+    };
 
-    form?.addEventListener('submit', async (event) => {
+    const handleSubmit = async (event) => {
+      if (!(form instanceof HTMLFormElement)) return;
+
       event.preventDefault();
-      if (!form) return;
 
       if (errorMessage) {
         errorMessage.textContent = '';
@@ -381,6 +394,32 @@ const descriptionId = "contact-modal-description";
       } finally {
         setSubmittingState(false);
       }
-    });
-  }
+    };
+
+    ensureOpenListener();
+    overlay.addEventListener('click', handleOverlayClick);
+    document.addEventListener('keydown', handleKeyDown);
+    form?.addEventListener('submit', handleSubmit);
+
+    const destroy = () => {
+      removeOpenListener();
+      overlay.removeEventListener('click', handleOverlayClick);
+      document.removeEventListener('keydown', handleKeyDown);
+      form?.removeEventListener('submit', handleSubmit);
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+      }
+      if (toastTimer) {
+        window.clearTimeout(toastTimer);
+        toastTimer = null;
+      }
+      document.removeEventListener('astro:before-swap', destroy);
+      window[stateKey] = undefined;
+    };
+
+    document.addEventListener('astro:before-swap', destroy, { once: true });
+
+    window[stateKey] = { destroy };
+  })();
 </script>
