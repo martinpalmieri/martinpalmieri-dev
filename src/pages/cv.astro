@@ -87,74 +87,72 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
         return;
       }
 
-      const getCurrentSectionIndex = () => {
-        const containerRect = mainContainer.getBoundingClientRect();
-        let closestIndex = 0;
-        let smallestDistance = Number.POSITIVE_INFINITY;
+      let sectionPositions = sections.map((section) => section.offsetTop);
+      let activeIndex = 0;
 
-        sections.forEach((section, index) => {
-          const sectionRect = section.getBoundingClientRect();
-          const distance = Math.abs(sectionRect.top - containerRect.top);
-
-          if (distance < smallestDistance) {
-            smallestDistance = distance;
-            closestIndex = index;
-          }
-        });
-
-        return closestIndex;
+      const setArrowVisibility = (index: number) => {
+        moreUpButton.classList.toggle("invisible", index === 0);
+        moreDownButton.classList.toggle(
+          "invisible",
+          index === sections.length - 1
+        );
       };
 
-      const updateArrowVisibility = () => {
-        const currentIndex = getCurrentSectionIndex();
-        const isAtFirstSection = currentIndex === 0;
-        const isAtLastSection = currentIndex === sections.length - 1;
+      const getSectionPositions = () =>
+        sections.map((section) => section.offsetTop);
 
-        if (isAtFirstSection) {
-          moreUpButton.classList.add("invisible");
-        } else {
-          moreUpButton.classList.remove("invisible");
-        }
+      const scrollToIndex = (index: number) => {
+        const targetPosition = sectionPositions[index];
 
-        if (isAtLastSection) {
-          moreDownButton.classList.add("invisible");
-        } else {
-          moreDownButton.classList.remove("invisible");
-        }
-      };
-
-      const scrollToSection = (targetIndex: number) => {
-        const targetSection = sections[targetIndex];
-
-        if (!targetSection) {
+        if (typeof targetPosition !== "number") {
           return;
         }
 
-        targetSection.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
+        activeIndex = index;
+        setArrowVisibility(index);
 
-        window.requestAnimationFrame(() => {
-          updateArrowVisibility();
+        mainContainer.scrollTo({
+          top: targetPosition,
+          behavior: "smooth"
         });
       };
 
-      const scrollToNextSection = () => {
-        const currentIndex = getCurrentSectionIndex();
-        const nextIndex = Math.min(currentIndex + 1, sections.length - 1);
+      const updateActiveIndexFromScroll = () => {
+        const scrollMiddle = mainContainer.scrollTop + mainContainer.clientHeight / 2;
+        let newIndex = 0;
 
-        if (nextIndex !== currentIndex) {
-          scrollToSection(nextIndex);
+        for (let index = 0; index < sectionPositions.length; index += 1) {
+          if (scrollMiddle >= sectionPositions[index]) {
+            newIndex = index;
+          } else {
+            break;
+          }
+        }
+
+        if (newIndex !== activeIndex) {
+          activeIndex = newIndex;
+          setArrowVisibility(newIndex);
+        }
+      };
+
+      const handleResize = () => {
+        sectionPositions = getSectionPositions();
+        updateActiveIndexFromScroll();
+      };
+
+      const scrollToNextSection = () => {
+        const nextIndex = Math.min(activeIndex + 1, sections.length - 1);
+
+        if (nextIndex !== activeIndex) {
+          scrollToIndex(nextIndex);
         }
       };
 
       const scrollToPreviousSection = () => {
-        const currentIndex = getCurrentSectionIndex();
-        const previousIndex = Math.max(currentIndex - 1, 0);
+        const previousIndex = Math.max(activeIndex - 1, 0);
 
-        if (previousIndex !== currentIndex) {
-          scrollToSection(previousIndex);
+        if (previousIndex !== activeIndex) {
+          scrollToIndex(previousIndex);
         }
       };
 
@@ -168,52 +166,38 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
         }
       };
 
-      let scrollAnimationFrame: number | undefined;
-
       const handleScroll = () => {
-        if (scrollAnimationFrame) {
-          return;
-        }
-
-        scrollAnimationFrame = window.requestAnimationFrame(() => {
-          updateArrowVisibility();
-          scrollAnimationFrame = undefined;
-        });
+        updateActiveIndexFromScroll();
       };
 
       const handleArrowClick = (event: MouseEvent) => {
-        const target = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>(
-          "[data-experience-nav]"
-        );
-
-        if (!target) {
-          return;
-        }
-
         event.preventDefault();
 
-        if (target.dataset.direction === "down") {
+        if (event.currentTarget === moreDownButton) {
           scrollToNextSection();
         } else {
           scrollToPreviousSection();
         }
       };
 
-      document.addEventListener("click", handleArrowClick);
+      moreDownButton.addEventListener("click", handleArrowClick);
+      moreUpButton.addEventListener("click", handleArrowClick);
       document.addEventListener("keydown", handleKeyDown);
       mainContainer.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleResize);
 
-      updateArrowVisibility();
+      window.requestAnimationFrame(() => {
+        sectionPositions = getSectionPositions();
+        updateActiveIndexFromScroll();
+        setArrowVisibility(activeIndex);
+      });
 
       const cleanup = () => {
-        if (scrollAnimationFrame) {
-          window.cancelAnimationFrame(scrollAnimationFrame);
-          scrollAnimationFrame = undefined;
-        }
-
-        document.removeEventListener("click", handleArrowClick);
+        moreDownButton.removeEventListener("click", handleArrowClick);
+        moreUpButton.removeEventListener("click", handleArrowClick);
         document.removeEventListener("keydown", handleKeyDown);
         mainContainer.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", handleResize);
       };
 
       document.addEventListener(
