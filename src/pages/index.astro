@@ -5,9 +5,17 @@ import profilePic from "../assets/martin-palmieri-profile.png";
 ---
 
 <BaseLayout>
-  <section class="flex min-h-screen items-center justify-center bg-white px-6 py-16 text-black">
-    <div class="grid w-full max-w-5xl items-center gap-16 md:grid-cols-[1fr_auto]">
-      <div class="space-y-6">
+  <section class="flex min-h-screen items-center justify-center bg-white px-6 py-2 md:py-16 text-black">
+    <div class="grid w-full max-w-5xl items-center gap-1 grid-rows-[auto_1fr] md:gap-8 md:grid-rows-none md:grid-cols-[1fr_auto]">
+      <div class="flex justify-center md:justify-end order-1 md:order-2">
+        <Image
+          src={profilePic}
+          class="object-cover size-96"
+          alt="This is me: Martin Palmieri - 2024 profile pic"
+          loading="eager"
+        />
+      </div>
+      <div class="space-y-6 order-2 md:order-1">
         <h1 class="font-title text-4xl md:text-6xl">Hello there, I'm Mart&iacute;n!</h1>
         <p class="max-w-xl text-lg md:text-2xl">
           Hands-on engineering leader building scalable customer experiences.
@@ -18,14 +26,6 @@ import profilePic from "../assets/martin-palmieri-profile.png";
         >
           Check my cv &rsaquo;
         </a>
-      </div>
-      <div class="flex justify-center md:justify-end">
-        <Image
-          src={profilePic}
-          class="size-48 rounded-3xl border border-black object-cover md:size-64"
-          alt="This is me: Martin Palmieri - 2024 profile pic"
-          loading="eager"
-        />
       </div>
     </div>
   </section>
