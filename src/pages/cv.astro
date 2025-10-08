@@ -62,152 +62,206 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
 </BaseLayout>
 
 <script is:inline data-astro-rerun>
-  document.addEventListener(
-    "astro:page-load",
-    () => {
-      const mainContainer = document.querySelector<HTMLElement>(".main-container");
-      const moreDownButton = document.querySelector<HTMLButtonElement>(
-        '[data-direction="down"]'
+  let teardown = null;
+
+  const setupNavigation = () => {
+    const mainContainer = document.querySelector(".main-container");
+    const moreDownButton = document.querySelector('[data-direction="down"]');
+    const moreUpButton = document.querySelector('[data-direction="up"]');
+
+    if (
+      !(mainContainer instanceof HTMLElement) ||
+      !(moreDownButton instanceof HTMLButtonElement) ||
+      !(moreUpButton instanceof HTMLButtonElement)
+    ) {
+      console.error("One or more elements could not be found in the document.");
+      return () => {};
+    }
+
+    const sections = Array.from(mainContainer.querySelectorAll("section"));
+
+    if (sections.length === 0) {
+      console.error("No sections were found inside the main container.");
+      return () => {};
+    }
+
+    let activeIndex = 0;
+    let sectionPositions = [];
+
+    const setArrowVisibility = (index) => {
+      moreUpButton.classList.toggle("invisible", index === 0);
+      moreDownButton.classList.toggle(
+        "invisible",
+        index === sections.length - 1
       );
-      const moreUpButton = document.querySelector<HTMLButtonElement>(
-        '[data-direction="up"]'
-      );
+    };
 
-      if (!mainContainer || !moreDownButton || !moreUpButton) {
-        console.error("One or more elements could not be found in the document.");
-        return;
-      }
-
-      const sections = Array.from(
-        mainContainer.querySelectorAll<HTMLElement>("section")
-      );
-
-      if (sections.length === 0) {
-        console.error("No sections were found inside the main container.");
-        return;
-      }
-
-      let sectionPositions = sections.map((section) => section.offsetTop);
-      let activeIndex = 0;
-
-      const setArrowVisibility = (index: number) => {
-        moreUpButton.classList.toggle("invisible", index === 0);
-        moreDownButton.classList.toggle(
-          "invisible",
-          index === sections.length - 1
+    const ensureSectionPositions = () => {
+      if (sectionPositions.length !== sections.length) {
+        sectionPositions = sections.map(
+          (section) => section.offsetTop - mainContainer.offsetTop
         );
-      };
+      }
+    };
 
-      const getSectionPositions = () =>
-        sections.map((section) => section.offsetTop);
+    const scrollToIndex = (index) => {
+      ensureSectionPositions();
+      const target = sectionPositions[index];
 
-      const scrollToIndex = (index: number) => {
-        const targetPosition = sectionPositions[index];
+      if (!Number.isFinite(target)) {
+        return;
+      }
 
-        if (typeof targetPosition !== "number") {
-          return;
-        }
+      activeIndex = index;
+      setArrowVisibility(index);
+      mainContainer.scrollTo({
+        top: target,
+        behavior: "smooth"
+      });
+    };
 
-        activeIndex = index;
-        setArrowVisibility(index);
+    const scrollToNextSection = () => {
+      const nextIndex = Math.min(activeIndex + 1, sections.length - 1);
 
-        mainContainer.scrollTo({
-          top: targetPosition,
-          behavior: "smooth"
-        });
-      };
+      if (nextIndex !== activeIndex) {
+        scrollToIndex(nextIndex);
+      }
+    };
 
-      const updateActiveIndexFromScroll = () => {
-        const scrollMiddle = mainContainer.scrollTop + mainContainer.clientHeight / 2;
-        let newIndex = 0;
+    const scrollToPreviousSection = () => {
+      const previousIndex = Math.max(activeIndex - 1, 0);
 
-        for (let index = 0; index < sectionPositions.length; index += 1) {
-          if (scrollMiddle >= sectionPositions[index]) {
-            newIndex = index;
-          } else {
-            break;
-          }
-        }
+      if (previousIndex !== activeIndex) {
+        scrollToIndex(previousIndex);
+      }
+    };
 
-        if (newIndex !== activeIndex) {
-          activeIndex = newIndex;
-          setArrowVisibility(newIndex);
-        }
-      };
-
-      const handleResize = () => {
-        sectionPositions = getSectionPositions();
-        updateActiveIndexFromScroll();
-      };
-
-      const scrollToNextSection = () => {
-        const nextIndex = Math.min(activeIndex + 1, sections.length - 1);
-
-        if (nextIndex !== activeIndex) {
-          scrollToIndex(nextIndex);
-        }
-      };
-
-      const scrollToPreviousSection = () => {
-        const previousIndex = Math.max(activeIndex - 1, 0);
-
-        if (previousIndex !== activeIndex) {
-          scrollToIndex(previousIndex);
-        }
-      };
-
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === "ArrowDown" || event.key === "PageDown") {
-          event.preventDefault();
-          scrollToNextSection();
-        } else if (event.key === "ArrowUp" || event.key === "PageUp") {
-          event.preventDefault();
-          scrollToPreviousSection();
-        }
-      };
-
-      const handleScroll = () => {
-        updateActiveIndexFromScroll();
-      };
-
-      const handleArrowClick = (event: MouseEvent) => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowDown" || event.key === "PageDown") {
         event.preventDefault();
+        scrollToNextSection();
+      } else if (event.key === "ArrowUp" || event.key === "PageUp") {
+        event.preventDefault();
+        scrollToPreviousSection();
+      }
+    };
 
-        if (event.currentTarget === moreDownButton) {
-          scrollToNextSection();
-        } else {
-          scrollToPreviousSection();
-        }
-      };
+    const handleArrowClick = (event) => {
+      event.preventDefault();
 
-      moreDownButton.addEventListener("click", handleArrowClick);
-      moreUpButton.addEventListener("click", handleArrowClick);
-      document.addEventListener("keydown", handleKeyDown);
-      mainContainer.addEventListener("scroll", handleScroll, { passive: true });
-      window.addEventListener("resize", handleResize);
+      if (event.currentTarget === moreDownButton) {
+        scrollToNextSection();
+      } else {
+        scrollToPreviousSection();
+      }
+    };
 
-      window.requestAnimationFrame(() => {
-        sectionPositions = getSectionPositions();
-        updateActiveIndexFromScroll();
-        setArrowVisibility(activeIndex);
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          const index = sections.indexOf(entry.target);
+
+          if (index === -1 || index === activeIndex) {
+            return;
+          }
+
+          activeIndex = index;
+          setArrowVisibility(activeIndex);
+        });
+      },
+      {
+        root: mainContainer,
+        threshold: 0.6
+      }
+    );
+
+    sections.forEach((section) => intersectionObserver.observe(section));
+
+    moreDownButton.addEventListener("click", handleArrowClick);
+    moreUpButton.addEventListener("click", handleArrowClick);
+    document.addEventListener("keydown", handleKeyDown);
+
+    window.requestAnimationFrame(() => {
+      ensureSectionPositions();
+
+      const visibleIndex = sections.findIndex((section, index) => {
+        const top = sectionPositions[index];
+        const bottom = top + section.clientHeight;
+        const scrollMiddle =
+          mainContainer.scrollTop + mainContainer.clientHeight / 2;
+
+        return scrollMiddle >= top && scrollMiddle < bottom;
       });
 
-      const cleanup = () => {
-        moreDownButton.removeEventListener("click", handleArrowClick);
-        moreUpButton.removeEventListener("click", handleArrowClick);
-        document.removeEventListener("keydown", handleKeyDown);
-        mainContainer.removeEventListener("scroll", handleScroll);
-        window.removeEventListener("resize", handleResize);
-      };
+      if (visibleIndex >= 0) {
+        activeIndex = visibleIndex;
+      }
 
-      document.addEventListener(
-        "astro:before-swap",
-        () => {
-          cleanup();
-        },
-        { once: true }
-      );
-    },
-    { once: true }
-  );
+      setArrowVisibility(activeIndex);
+    });
+
+    const handleResize = () => {
+      sectionPositions = [];
+      ensureSectionPositions();
+      const currentIndex = sections.findIndex((section, index) => {
+        const top = sectionPositions[index];
+        const bottom = top + section.clientHeight;
+        const scrollMiddle =
+          mainContainer.scrollTop + mainContainer.clientHeight / 2;
+
+        return scrollMiddle >= top && scrollMiddle < bottom;
+      });
+
+      if (currentIndex >= 0 && currentIndex !== activeIndex) {
+        activeIndex = currentIndex;
+      }
+
+      setArrowVisibility(activeIndex);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    const cleanup = () => {
+      intersectionObserver.disconnect();
+      moreDownButton.removeEventListener("click", handleArrowClick);
+      moreUpButton.removeEventListener("click", handleArrowClick);
+      document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+    };
+
+    const handleBeforeSwap = () => {
+      cleanup();
+    };
+
+    document.addEventListener("astro:before-swap", handleBeforeSwap, {
+      once: true
+    });
+
+    return () => {
+      cleanup();
+      document.removeEventListener("astro:before-swap", handleBeforeSwap);
+    };
+  };
+
+  const initializeNavigation = () => {
+    if (typeof teardown === "function") {
+      teardown();
+    }
+
+    teardown = setupNavigation();
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    initializeNavigation();
+  } else {
+    document.addEventListener("DOMContentLoaded", initializeNavigation, {
+      once: true
+    });
+  }
+
+  document.addEventListener("astro:page-load", initializeNavigation);
 </script>
