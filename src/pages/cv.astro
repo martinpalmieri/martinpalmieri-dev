@@ -74,82 +74,83 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
         return;
       }
 
-      const updateArrowVisibility = () => {
-        const { scrollTop, scrollHeight, clientHeight } = mainContainer;
-        const atTop = scrollTop < 10;
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      const sections = Array.from(
+        mainContainer.querySelectorAll<HTMLElement>("section")
+      );
 
-        if (atTop) {
+      if (sections.length === 0) {
+        console.error("No sections were found inside the main container.");
+        return;
+      }
+
+      const getCurrentSectionIndex = () => {
+        const { scrollTop } = mainContainer;
+        let closestIndex = 0;
+        let smallestDistance = Number.POSITIVE_INFINITY;
+
+        sections.forEach((section, index) => {
+          const distance = Math.abs(section.offsetTop - scrollTop);
+
+          if (distance < smallestDistance) {
+            smallestDistance = distance;
+            closestIndex = index;
+          }
+        });
+
+        return closestIndex;
+      };
+
+      const updateArrowVisibility = () => {
+        const currentIndex = getCurrentSectionIndex();
+        const isAtFirstSection = currentIndex === 0;
+        const isAtLastSection = currentIndex === sections.length - 1;
+
+        if (isAtFirstSection) {
           moreUpButton.classList.add("invisible");
         } else {
           moreUpButton.classList.remove("invisible");
         }
 
-        if (atBottom) {
+        if (isAtLastSection) {
           moreDownButton.classList.add("invisible");
         } else {
           moreDownButton.classList.remove("invisible");
         }
       };
 
-      let lastScrollTop = 0;
-      let isScrolling = false;
-      let scrollTimeout: ReturnType<typeof setTimeout> | undefined;
+      const scrollToSection = (targetIndex: number) => {
+        const targetSection = sections[targetIndex];
 
-      const handleScroll = () => {
-        if (isScrolling) {
+        if (!targetSection) {
           return;
         }
 
-        const { scrollTop } = mainContainer;
-        const scrollingUp = scrollTop < lastScrollTop;
+        mainContainer.scrollTo({
+          top: targetSection.offsetTop,
+          behavior: "smooth"
+        });
 
-        if (scrollingUp) {
-          moreDownButton.classList.remove("invisible");
-        }
-
-        updateArrowVisibility();
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        window.requestAnimationFrame(() => {
+          updateArrowVisibility();
+        });
       };
 
       const scrollToNextSection = () => {
-        if (isScrolling) {
-          return;
+        const currentIndex = getCurrentSectionIndex();
+        const nextIndex = Math.min(currentIndex + 1, sections.length - 1);
+
+        if (nextIndex !== currentIndex) {
+          scrollToSection(nextIndex);
         }
-
-        isScrolling = true;
-        const { scrollTop, clientHeight } = mainContainer;
-        const targetScrollTop = Math.ceil(scrollTop / clientHeight) * clientHeight + clientHeight;
-
-        mainContainer.scrollTo({
-          top: targetScrollTop,
-          behavior: "smooth"
-        });
-
-        window.setTimeout(() => {
-          updateArrowVisibility();
-          isScrolling = false;
-        }, 500);
       };
 
       const scrollToPreviousSection = () => {
-        if (isScrolling) {
-          return;
+        const currentIndex = getCurrentSectionIndex();
+        const previousIndex = Math.max(currentIndex - 1, 0);
+
+        if (previousIndex !== currentIndex) {
+          scrollToSection(previousIndex);
         }
-
-        isScrolling = true;
-        const { scrollTop, clientHeight } = mainContainer;
-        const targetScrollTop = Math.floor(scrollTop / clientHeight) * clientHeight - clientHeight;
-
-        mainContainer.scrollTo({
-          top: targetScrollTop,
-          behavior: "smooth"
-        });
-
-        window.setTimeout(() => {
-          updateArrowVisibility();
-          isScrolling = false;
-        }, 500);
       };
 
       const handleKeyDown = (event: KeyboardEvent) => {
@@ -162,28 +163,36 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
         }
       };
 
-      const debouncedScrollHandler = () => {
-        if (scrollTimeout) {
-          window.clearTimeout(scrollTimeout);
+      let scrollAnimationFrame: number | undefined;
+
+      const handleScroll = () => {
+        if (scrollAnimationFrame) {
+          return;
         }
-        scrollTimeout = window.setTimeout(handleScroll, 10);
+
+        scrollAnimationFrame = window.requestAnimationFrame(() => {
+          updateArrowVisibility();
+          scrollAnimationFrame = undefined;
+        });
       };
 
       moreDownButton.addEventListener("click", scrollToNextSection);
       moreUpButton.addEventListener("click", scrollToPreviousSection);
       document.addEventListener("keydown", handleKeyDown);
-      mainContainer.addEventListener("scroll", debouncedScrollHandler, { passive: true });
+      mainContainer.addEventListener("scroll", handleScroll, { passive: true });
 
       updateArrowVisibility();
 
       const cleanup = () => {
-        if (scrollTimeout) {
-          window.clearTimeout(scrollTimeout);
+        if (scrollAnimationFrame) {
+          window.cancelAnimationFrame(scrollAnimationFrame);
+          scrollAnimationFrame = undefined;
         }
+
         moreDownButton.removeEventListener("click", scrollToNextSection);
         moreUpButton.removeEventListener("click", scrollToPreviousSection);
         document.removeEventListener("keydown", handleKeyDown);
-        mainContainer.removeEventListener("scroll", debouncedScrollHandler);
+        mainContainer.removeEventListener("scroll", handleScroll);
       };
 
       document.addEventListener(
