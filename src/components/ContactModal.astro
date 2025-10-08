@@ -270,25 +270,42 @@ const descriptionId = "contact-modal-description";
       return isValid;
     };
 
-    const handleOpenTriggers = (event) => {
-      if (!(event.currentTarget instanceof HTMLElement)) return;
+    let hasOpenListener = false;
+
+    const handleDocumentClick = (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      const trigger = event.target.closest('[data-contact-modal-open]');
+
+      if (!(trigger instanceof HTMLElement)) return;
+
+      event.preventDefault();
+
+      if (overlay.getAttribute('aria-hidden') === 'false') {
+        return;
+      }
+
       resetFormState();
       form?.reset();
-      openModal(event.currentTarget);
+      openModal(trigger);
     };
 
-    const registerTriggers = () => {
-      document.querySelectorAll('[data-contact-modal-open]').forEach((trigger) => {
-        if (trigger instanceof HTMLElement && !trigger.dataset.contactBound) {
-          trigger.dataset.contactBound = 'true';
-          trigger.addEventListener('click', handleOpenTriggers);
-        }
-      });
+    const ensureOpenListener = () => {
+      if (hasOpenListener) return;
+      document.addEventListener('click', handleDocumentClick);
+      hasOpenListener = true;
     };
 
-    registerTriggers();
-    document.addEventListener('astro:after-swap', registerTriggers);
-    document.addEventListener('astro:page-load', registerTriggers);
+    const removeOpenListener = () => {
+      if (!hasOpenListener) return;
+      document.removeEventListener('click', handleDocumentClick);
+      hasOpenListener = false;
+    };
+
+    ensureOpenListener();
+    document.addEventListener('astro:after-swap', ensureOpenListener);
+    document.addEventListener('astro:page-load', ensureOpenListener);
+    document.addEventListener('astro:before-swap', removeOpenListener);
 
     closeButtons.forEach((button) =>
       button.addEventListener('click', () => {
