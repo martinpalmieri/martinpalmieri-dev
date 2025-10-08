@@ -54,7 +54,7 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
       )
     }
   </main>
-  <div class="fixed left-1/2 bottom-[100px] z-10 -translate-x-1/2 md:bottom-10">
+  <div class="fixed left-1/2 bottom-[100px] z-10 -translate-x-1/2 md:bottom-10 flex flex-col items-center">
     <ArrowIcon direction="up" />
     <ArrowIcon direction="down" />
   </div>
@@ -62,138 +62,206 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
 </BaseLayout>
 
 <script is:inline data-astro-rerun>
-  document.addEventListener(
-    "astro:page-load",
-    () => {
-      const mainContainer = document.querySelector<HTMLElement>(".main-container");
-      const moreDownButton = document.querySelector<HTMLButtonElement>(".more-down");
-      const moreUpButton = document.querySelector<HTMLButtonElement>(".more-up");
+  let teardown = null;
 
-      if (!mainContainer || !moreDownButton || !moreUpButton) {
-        console.error("One or more elements could not be found in the document.");
+  const setupNavigation = () => {
+    const mainContainer = document.querySelector(".main-container");
+    const moreDownButton = document.querySelector('[data-direction="down"]');
+    const moreUpButton = document.querySelector('[data-direction="up"]');
+
+    if (
+      !(mainContainer instanceof HTMLElement) ||
+      !(moreDownButton instanceof HTMLButtonElement) ||
+      !(moreUpButton instanceof HTMLButtonElement)
+    ) {
+      console.error("One or more elements could not be found in the document.");
+      return () => {};
+    }
+
+    const sections = Array.from(mainContainer.querySelectorAll("section"));
+
+    if (sections.length === 0) {
+      console.error("No sections were found inside the main container.");
+      return () => {};
+    }
+
+    let activeIndex = 0;
+    let sectionPositions = [];
+
+    const setArrowVisibility = (index) => {
+      moreUpButton.classList.toggle("invisible", index === 0);
+      moreDownButton.classList.toggle(
+        "invisible",
+        index === sections.length - 1
+      );
+    };
+
+    const ensureSectionPositions = () => {
+      if (sectionPositions.length !== sections.length) {
+        sectionPositions = sections.map(
+          (section) => section.offsetTop - mainContainer.offsetTop
+        );
+      }
+    };
+
+    const scrollToIndex = (index) => {
+      ensureSectionPositions();
+      const target = sectionPositions[index];
+
+      if (!Number.isFinite(target)) {
         return;
       }
 
-      const updateArrowVisibility = () => {
-        const { scrollTop, scrollHeight, clientHeight } = mainContainer;
-        const atTop = scrollTop < 10;
-        const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      activeIndex = index;
+      setArrowVisibility(index);
+      mainContainer.scrollTo({
+        top: target,
+        behavior: "smooth"
+      });
+    };
 
-        if (atTop) {
-          moreUpButton.classList.add("invisible");
-        } else {
-          moreUpButton.classList.remove("invisible");
-        }
+    const scrollToNextSection = () => {
+      const nextIndex = Math.min(activeIndex + 1, sections.length - 1);
 
-        if (atBottom) {
-          moreDownButton.classList.add("invisible");
-        } else {
-          moreDownButton.classList.remove("invisible");
-        }
-      };
+      if (nextIndex !== activeIndex) {
+        scrollToIndex(nextIndex);
+      }
+    };
 
-      let lastScrollTop = 0;
-      let isScrolling = false;
-      let scrollTimeout: ReturnType<typeof setTimeout> | undefined;
+    const scrollToPreviousSection = () => {
+      const previousIndex = Math.max(activeIndex - 1, 0);
 
-      const handleScroll = () => {
-        if (isScrolling) {
-          return;
-        }
+      if (previousIndex !== activeIndex) {
+        scrollToIndex(previousIndex);
+      }
+    };
 
-        const { scrollTop } = mainContainer;
-        const scrollingUp = scrollTop < lastScrollTop;
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowDown" || event.key === "PageDown") {
+        event.preventDefault();
+        scrollToNextSection();
+      } else if (event.key === "ArrowUp" || event.key === "PageUp") {
+        event.preventDefault();
+        scrollToPreviousSection();
+      }
+    };
 
-        if (scrollingUp) {
-          moreDownButton.classList.remove("invisible");
-        }
+    const handleArrowClick = (event) => {
+      event.preventDefault();
 
-        updateArrowVisibility();
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-      };
+      if (event.currentTarget === moreDownButton) {
+        scrollToNextSection();
+      } else {
+        scrollToPreviousSection();
+      }
+    };
 
-      const scrollToNextSection = () => {
-        if (isScrolling) {
-          return;
-        }
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
 
-        isScrolling = true;
-        const { scrollTop, clientHeight } = mainContainer;
-        const targetScrollTop = Math.ceil(scrollTop / clientHeight) * clientHeight + clientHeight;
+          const index = sections.indexOf(entry.target);
 
-        mainContainer.scrollTo({
-          top: targetScrollTop,
-          behavior: "smooth"
+          if (index === -1 || index === activeIndex) {
+            return;
+          }
+
+          activeIndex = index;
+          setArrowVisibility(activeIndex);
         });
+      },
+      {
+        root: mainContainer,
+        threshold: 0.6
+      }
+    );
 
-        window.setTimeout(() => {
-          updateArrowVisibility();
-          isScrolling = false;
-        }, 500);
-      };
+    sections.forEach((section) => intersectionObserver.observe(section));
 
-      const scrollToPreviousSection = () => {
-        if (isScrolling) {
-          return;
-        }
+    moreDownButton.addEventListener("click", handleArrowClick);
+    moreUpButton.addEventListener("click", handleArrowClick);
+    document.addEventListener("keydown", handleKeyDown);
 
-        isScrolling = true;
-        const { scrollTop, clientHeight } = mainContainer;
-        const targetScrollTop = Math.floor(scrollTop / clientHeight) * clientHeight - clientHeight;
+    window.requestAnimationFrame(() => {
+      ensureSectionPositions();
 
-        mainContainer.scrollTo({
-          top: targetScrollTop,
-          behavior: "smooth"
-        });
+      const visibleIndex = sections.findIndex((section, index) => {
+        const top = sectionPositions[index];
+        const bottom = top + section.clientHeight;
+        const scrollMiddle =
+          mainContainer.scrollTop + mainContainer.clientHeight / 2;
 
-        window.setTimeout(() => {
-          updateArrowVisibility();
-          isScrolling = false;
-        }, 500);
-      };
+        return scrollMiddle >= top && scrollMiddle < bottom;
+      });
 
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === "ArrowDown" || event.key === "PageDown") {
-          event.preventDefault();
-          scrollToNextSection();
-        } else if (event.key === "ArrowUp" || event.key === "PageUp") {
-          event.preventDefault();
-          scrollToPreviousSection();
-        }
-      };
+      if (visibleIndex >= 0) {
+        activeIndex = visibleIndex;
+      }
 
-      const debouncedScrollHandler = () => {
-        if (scrollTimeout) {
-          window.clearTimeout(scrollTimeout);
-        }
-        scrollTimeout = window.setTimeout(handleScroll, 10);
-      };
+      setArrowVisibility(activeIndex);
+    });
 
-      moreDownButton.addEventListener("click", scrollToNextSection);
-      moreUpButton.addEventListener("click", scrollToPreviousSection);
-      document.addEventListener("keydown", handleKeyDown);
-      mainContainer.addEventListener("scroll", debouncedScrollHandler, { passive: true });
+    const handleResize = () => {
+      sectionPositions = [];
+      ensureSectionPositions();
+      const currentIndex = sections.findIndex((section, index) => {
+        const top = sectionPositions[index];
+        const bottom = top + section.clientHeight;
+        const scrollMiddle =
+          mainContainer.scrollTop + mainContainer.clientHeight / 2;
 
-      updateArrowVisibility();
+        return scrollMiddle >= top && scrollMiddle < bottom;
+      });
 
-      const cleanup = () => {
-        if (scrollTimeout) {
-          window.clearTimeout(scrollTimeout);
-        }
-        moreDownButton.removeEventListener("click", scrollToNextSection);
-        moreUpButton.removeEventListener("click", scrollToPreviousSection);
-        document.removeEventListener("keydown", handleKeyDown);
-        mainContainer.removeEventListener("scroll", debouncedScrollHandler);
-      };
+      if (currentIndex >= 0 && currentIndex !== activeIndex) {
+        activeIndex = currentIndex;
+      }
 
-      document.addEventListener(
-        "astro:before-swap",
-        () => {
-          cleanup();
-        },
-        { once: true }
-      );
-    },
-    { once: true }
-  );
+      setArrowVisibility(activeIndex);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    const cleanup = () => {
+      intersectionObserver.disconnect();
+      moreDownButton.removeEventListener("click", handleArrowClick);
+      moreUpButton.removeEventListener("click", handleArrowClick);
+      document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+    };
+
+    const handleBeforeSwap = () => {
+      cleanup();
+    };
+
+    document.addEventListener("astro:before-swap", handleBeforeSwap, {
+      once: true
+    });
+
+    return () => {
+      cleanup();
+      document.removeEventListener("astro:before-swap", handleBeforeSwap);
+    };
+  };
+
+  const initializeNavigation = () => {
+    if (typeof teardown === "function") {
+      teardown();
+    }
+
+    teardown = setupNavigation();
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    initializeNavigation();
+  } else {
+    document.addEventListener("DOMContentLoaded", initializeNavigation, {
+      once: true
+    });
+  }
+
+  document.addEventListener("astro:page-load", initializeNavigation);
 </script>

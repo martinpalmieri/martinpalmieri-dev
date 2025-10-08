@@ -13,7 +13,9 @@ const ariaLabel =
 
 <button
   type="button"
-  class={`bg-transparent border-none p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full ${direction === "up" ? "top-[-40px] invisible more-up" : "top-0 more-down"} absolute`}
+  data-experience-nav
+  data-direction={direction}
+  class={`bg-transparent border-none p-0 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full ${direction === "up" ? "mb-6 invisible more-up" : "more-down"}`}
   aria-label={ariaLabel}
 >
   <svg
