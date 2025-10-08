@@ -5,24 +5,27 @@ import profilePic from "../assets/martin-palmieri-profile.png";
 ---
 
 <BaseLayout>
-  <section class="flex h-screen items-center justify-center">
-    <div class="flex flex-col justify-center">
-      <Image
-        src={profilePic}
-        class="rounded-lg w-48 h-48 relative top-3 left-0 z-50"
-        alt="This is me: Martin Palmieri - 2024 profile pic"
-        loading="eager"
-      />
-      <div class="mb-12 rounded-sm rounded-br-[32px] bg-slate-950 px-12 py-16 text-white">
-        <h1 class="font-title mb-1 text-2xl">Hello there.</h1>
-        <h3 class="text-xl">I'm Mart&iacute;n.</h3>
-        <p class="text-xl">I'm a Senior Software Engineer.</p>
+  <section class="flex min-h-screen items-center justify-center bg-white px-6 py-16 text-black">
+    <div class="grid w-full max-w-5xl items-center gap-16 md:grid-cols-[1fr_auto]">
+      <div class="space-y-6">
+        <h1 class="font-title text-4xl md:text-6xl">Hello there, I'm Mart&iacute;n!</h1>
+        <p class="max-w-xl text-lg md:text-2xl">
+          Hands-on engineering leader building scalable customer experiences.
+        </p>
         <a
-          class="mt-6 inline-flex items-center rounded border border-white px-4 py-2 font-bold text-white transition delay-100 ease-linear hover:bg-white hover:text-slate-950"
+          class="inline-flex w-fit items-center gap-2 rounded-full border border-black px-6 py-3 font-semibold tracking-wide transition hover:bg-black hover:text-white"
           href="/cv"
         >
           Check my cv &rsaquo;
         </a>
+      </div>
+      <div class="flex justify-center md:justify-end">
+        <Image
+          src={profilePic}
+          class="size-48 rounded-3xl border border-black object-cover md:size-64"
+          alt="This is me: Martin Palmieri - 2024 profile pic"
+          loading="eager"
+        />
       </div>
     </div>
   </section>
