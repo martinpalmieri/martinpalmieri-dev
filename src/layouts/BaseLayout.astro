@@ -1,5 +1,6 @@
 ---
 import { ViewTransitions } from "astro:transitions";
+import ContactModal from "../components/ContactModal.astro";
 
 interface BaseLayoutProps {
   title?: string;
@@ -43,5 +44,6 @@ const canonicalUrl = Astro.site
   </head>
   <body class="max-h-screen overflow-hidden">
     <slot />
+    <ContactModal />
   </body>
 </html>
