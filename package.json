@@ -17,19 +17,24 @@
     "typecheck": "node ./scripts/typecheck.mjs"
   },
   "dependencies": {
-    "@astrojs/react": "^3.4.0",
-    "@astrojs/tailwind": "^5.1.0",
-    "@astrojs/vercel": "^7.6.0",
+    "@astrojs/react": "^5.0.7",
+    "@astrojs/vercel": "^10.0.8",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vercel/analytics": "^1.3.1",
-    "astro": "^4.9.2",
+    "astro": "^6.4.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.3"
   },
   "devDependencies": {
     "@astrojs/check": "file:vendor/astro-check",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.15",
     "typescript": "file:vendor/typescript"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1",
+    "path-to-regexp": "^6.3.0"
   }
 }

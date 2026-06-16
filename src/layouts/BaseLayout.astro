@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import "../styles/global.css";
 
 interface BaseLayoutProps {
   title?: string;
@@ -39,7 +39,6 @@ const canonicalUrl = Astro.site
     />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <slot name="head" />
-    <ViewTransitions />
   </head>
   <body class="max-h-screen overflow-hidden">
     <slot />
