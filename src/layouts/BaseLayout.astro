@@ -4,11 +4,13 @@ import "../styles/global.css";
 interface BaseLayoutProps {
   title?: string;
   description?: string;
+  bodyClass?: string;
 }
 
 const {
   title = "Martín Palmieri | Frontend/Software Developer",
-  description = "Martín Palmieri Frontend/Software Developer."
+  description = "Martín Palmieri Frontend/Software Developer.",
+  bodyClass = "max-h-screen overflow-hidden"
 } = Astro.props as BaseLayoutProps;
 
 const canonicalUrl = Astro.site
@@ -31,16 +33,10 @@ const canonicalUrl = Astro.site
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bevan&family=Caprasimo&display=swap"
-      rel="stylesheet"
-    />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <slot name="head" />
   </head>
-  <body class="max-h-screen overflow-hidden">
+  <body class={bodyClass}>
     <slot />
   </body>
 </html>

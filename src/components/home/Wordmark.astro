@@ -1,0 +1,76 @@
+---
+import { getImage } from "astro:assets";
+import desktopWordmark from "../../assets/home/wordmark-desktop.png";
+import mobileWordmark from "../../assets/home/wordmark-mobile.png";
+
+// Keep in sync with the mobile breakpoint in this component's styles.
+const MOBILE_MEDIA = "(max-width: 599px)";
+const formats = ["avif", "webp"] as const;
+
+const [mobileSources, desktopSources, fallback] = await Promise.all([
+  Promise.all(
+    formats.map(format =>
+      getImage({ src: mobileWordmark, format, widths: [400, 640, 860, mobileWordmark.width] })
+    )
+  ),
+  Promise.all(
+    formats.map(format =>
+      getImage({
+        src: desktopWordmark,
+        format,
+        widths: [640, 960, 1280, 1600, desktopWordmark.width],
+      })
+    )
+  ),
+  getImage({ src: desktopWordmark, format: "webp", width: 1280 }),
+]);
+---
+
+<picture>
+  {
+    mobileSources.map(image => (
+      <source
+        media={MOBILE_MEDIA}
+        type={`image/${image.options.format}`}
+        srcset={image.srcSet.attribute}
+        sizes="88vw"
+        width={mobileWordmark.width}
+        height={mobileWordmark.height}
+      />
+    ))
+  }
+  {
+    desktopSources.map(image => (
+      <source
+        type={`image/${image.options.format}`}
+        srcset={image.srcSet.attribute}
+        sizes="min(92vw, 1500px)"
+        width={desktopWordmark.width}
+        height={desktopWordmark.height}
+      />
+    ))
+  }
+  <img
+    src={fallback.src}
+    alt=""
+    width={desktopWordmark.width}
+    height={desktopWordmark.height}
+    fetchpriority="high"
+  />
+</picture>
+
+<style>
+  img {
+    display: block;
+    width: min(100%, 1500px, 136svh);
+    height: auto;
+    margin-inline: auto;
+    object-fit: contain;
+  }
+
+  @media (max-width: 599px) {
+    img {
+      width: min(100%, 420px, 40svh);
+    }
+  }
+</style>

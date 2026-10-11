@@ -28,6 +28,14 @@ const formattedExperienceData = formatExperienceData(workExperience as WorkExper
 ---
 
 <BaseLayout title="Curriculum Vitae | Martín Palmieri" description="Professional experience and background of Martín Palmieri.">
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bevan&family=Caprasimo&display=swap"
+      rel="stylesheet"
+    />
+  </Fragment>
   <Header />
   <main
     class="main-container h-[calc(100vh-62px)] w-full snap-y snap-mandatory overflow-y-scroll scroll-smooth lg:h-[calc(100vh-88px)]"
