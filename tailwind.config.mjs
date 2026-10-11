@@ -14,7 +14,6 @@ export default {
         }
       },
       fontFamily: {
-        title: ["Bevan", "sans-serif"],
         display: ["Anton", "Impact", "Haettenschweiler", "Arial Narrow Bold", "sans-serif"]
       }
     }

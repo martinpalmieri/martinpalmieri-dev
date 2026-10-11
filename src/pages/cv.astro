@@ -1,275 +1,319 @@
 ---
-import workExperience from "../data/work-experience.json";
-import { formatISODate } from "../utils/date-formatter";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ArrowIcon from "../components/ArrowIcon.astro";
-import Header from "../components/Header.astro";
+import Frame from "../components/Frame.astro";
 import Footer from "../components/Footer.astro";
+import Experience from "../components/cv/Experience.astro";
+import { companies } from "../data/cv";
 
-interface WorkExperienceEntry {
-  company: {
-    name: string;
-    img: string;
-  };
-  startDate: string;
-  endDate: string | null;
-  title: string;
-  description: string;
-}
+export const prerender = true;
 
-const formatExperienceData = (data: WorkExperienceEntry[]) =>
-  data.map((experience) => ({
-    ...experience,
-    startDate: formatISODate(experience.startDate),
-    endDate: experience.endDate ? formatISODate(experience.endDate) : "Present"
-  }));
-
-const formattedExperienceData = formatExperienceData(workExperience as WorkExperienceEntry[]);
+const total = String(companies.length).padStart(2, "0");
 ---
 
-<BaseLayout title="Curriculum Vitae | Martín Palmieri" description="Professional experience and background of Martín Palmieri.">
-  <Fragment slot="head">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bevan&family=Caprasimo&display=swap"
-      rel="stylesheet"
-    />
-  </Fragment>
-  <Header />
-  <main
-    class="main-container h-[calc(100vh-62px)] w-full snap-y snap-mandatory overflow-y-scroll scroll-smooth lg:h-[calc(100vh-88px)]"
-    aria-label="Professional experience timeline"
-  >
-    {
-      formattedExperienceData.map(
-        ({ company, title, startDate, endDate, description }) => (
-          <section
-            class="flex h-[calc(100vh-62px)] w-full snap-center flex-col items-start px-6 pt-10 md:px-10 lg:h-[calc(100vh-88px)] lg:flex-row"
-          >
-            <div class="mb-4 w-full lg:mb-0 lg:w-1/2 lg:pr-8">
-              <h1 class="font-title text-4xl md:text-6xl lg:text-8xl">{company.name}</h1>
-            </div>
-            <div class="w-full lg:w-1/2">
-              <h3 class="text-xl font-bold text-gray-700 md:text-2xl lg:text-3xl">
-                {startDate} - {endDate}
-              </h3>
-              <h2 class="mb-3 text-2xl font-extrabold md:text-4xl lg:mb-4 lg:text-5xl">{title}</h2>
-              <p class="text-lg font-normal leading-relaxed md:text-xl lg:text-2xl">{description}</p>
-            </div>
-          </section>
-        )
-      )
-    }
-  </main>
-  <div class="fixed left-1/2 bottom-[100px] z-10 -translate-x-1/2 md:bottom-10 flex flex-col items-center">
-    <ArrowIcon direction="up" />
-    <ArrowIcon direction="down" />
-  </div>
-  <Footer />
+<BaseLayout
+  title="Curriculum Vitae | Martín Palmieri"
+  description="Professional experience and background of Martín Palmieri."
+  bodyClass="bg-cobalt overflow-hidden"
+>
+  <meta slot="head" name="theme-color" content="#03298F" />
+
+  <Frame fixed>
+    <a slot="top" class="back" href="/">
+      <svg viewBox="0 0 26 12" aria-hidden="true">
+        <path d="M25 6H2M7 1 2 6l5 5" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+      </svg>
+      <span><span class="sr-only">Back to </span>martinpalmieri.dev</span>
+    </a>
+
+    <p class="progress" aria-hidden="true"><span data-cv-current>01</span> / {total}</p>
+
+    <main class="track" tabindex="0" aria-label="Work experience" data-cv-track>
+      <h1 class="sr-only">Martín Palmieri: work experience</h1>
+      {companies.map((company, index) => <Experience {...company} eager={index === 0} />)}
+    </main>
+
+    <nav class="steps" aria-label="Experience navigation">
+      <button type="button" class="step" data-cv-step="-1" aria-label="Previous experience" aria-disabled="true">
+        <svg viewBox="0 0 24 30" aria-hidden="true">
+          <path d="M12 27V5M3.5 13.5 12 5l8.5 8.5" fill="none" stroke="currentColor" stroke-width="5"></path>
+        </svg>
+      </button>
+      <button type="button" class="step" data-cv-step="1" aria-label="Next experience" aria-disabled="false">
+        <svg viewBox="0 0 24 30" aria-hidden="true">
+          <path d="M12 3v22M3.5 16.5 12 25l8.5-8.5" fill="none" stroke="currentColor" stroke-width="5"></path>
+        </svg>
+      </button>
+    </nav>
+
+    <p class="sr-only" aria-live="polite" data-cv-status></p>
+
+    <Footer slot="bottom" />
+  </Frame>
 </BaseLayout>
 
-<script is:inline data-astro-rerun>
-  let teardown = null;
+<script>
+  const track = document.querySelector<HTMLElement>("[data-cv-track]");
+  const experiences = Array.from(document.querySelectorAll<HTMLElement>("[data-cv-experience]"));
+  const counter = document.querySelector("[data-cv-current]");
+  const status = document.querySelector("[data-cv-status]");
+  const steps = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-cv-step]"));
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const keys: Record<string, number> = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 };
 
-  const setupNavigation = () => {
-    const mainContainer = document.querySelector(".main-container");
-    const moreDownButton = document.querySelector('[data-direction="down"]');
-    const moreUpButton = document.querySelector('[data-direction="up"]');
+  if (track && experiences.length > 0) {
+    const last = experiences.length - 1;
+    let active = 0;
+    // Destination of an in-flight scroll, so repeated presses keep advancing instead of retargeting.
+    let pending: number | null = null;
+    let pendingTimer = 0;
+    let frame = 0;
 
-    if (
-      !(mainContainer instanceof HTMLElement) ||
-      !(moreDownButton instanceof HTMLButtonElement) ||
-      !(moreUpButton instanceof HTMLButtonElement)
-    ) {
-      console.error("One or more elements could not be found in the document.");
-      return () => {};
-    }
+    const behavior = (): ScrollBehavior => (reducedMotion.matches ? "auto" : "smooth");
 
-    const sections = Array.from(mainContainer.querySelectorAll("section"));
+    const render = (index: number) => {
+      active = index;
 
-    if (sections.length === 0) {
-      console.error("No sections were found inside the main container.");
-      return () => {};
-    }
-
-    let activeIndex = 0;
-    let sectionPositions = [];
-
-    const setArrowVisibility = (index) => {
-      moreUpButton.classList.toggle("invisible", index === 0);
-      moreDownButton.classList.toggle(
-        "invisible",
-        index === sections.length - 1
-      );
-    };
-
-    const ensureSectionPositions = () => {
-      if (sectionPositions.length !== sections.length) {
-        sectionPositions = sections.map(
-          (section) => section.offsetTop - mainContainer.offsetTop
-        );
+      if (counter) {
+        counter.textContent = String(index + 1).padStart(2, "0");
       }
+
+      steps.forEach(step => {
+        const edge = Number(step.dataset.cvStep) < 0 ? 0 : last;
+        step.setAttribute("aria-disabled", String(index === edge));
+      });
     };
 
-    const scrollToIndex = (index) => {
-      ensureSectionPositions();
-      const target = sectionPositions[index];
+    const indexAtScroll = () => {
+      const middle = track.scrollTop + track.clientHeight / 2;
+      return experiences.reduce((found, experience, index) => (experience.offsetTop <= middle ? index : found), 0);
+    };
 
-      if (!Number.isFinite(target)) {
+    const goTo = (index: number) => {
+      const target = experiences[index];
+
+      if (!target) {
         return;
       }
 
-      activeIndex = index;
-      setArrowVisibility(index);
-      mainContainer.scrollTo({
-        top: target,
-        behavior: "smooth"
-      });
-    };
+      pending = index;
+      window.clearTimeout(pendingTimer);
+      pendingTimer = window.setTimeout(() => (pending = null), 1000);
+      track.scrollTo({ top: target.offsetTop, behavior: behavior() });
 
-    const scrollToNextSection = () => {
-      const nextIndex = Math.min(activeIndex + 1, sections.length - 1);
-
-      if (nextIndex !== activeIndex) {
-        scrollToIndex(nextIndex);
+      if (status) {
+        status.textContent = `${index + 1} of ${experiences.length}: ${target.dataset.cvExperience}`;
       }
     };
 
-    const scrollToPreviousSection = () => {
-      const previousIndex = Math.max(activeIndex - 1, 0);
+    const step = (direction: number) => {
+      const from = pending ?? active;
+      const to = Math.min(Math.max(from + direction, 0), last);
 
-      if (previousIndex !== activeIndex) {
-        scrollToIndex(previousIndex);
+      if (to !== from) {
+        goTo(to);
       }
     };
 
-    const handleKeyDown = (event) => {
-      if (event.key === "ArrowDown" || event.key === "PageDown") {
-        event.preventDefault();
-        scrollToNextSection();
-      } else if (event.key === "ArrowUp" || event.key === "PageUp") {
-        event.preventDefault();
-        scrollToPreviousSection();
-      }
-    };
+    track.addEventListener(
+      "scroll",
+      () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const index = indexAtScroll();
+          const experience = experiences[index];
 
-    const handleArrowClick = (event) => {
-      event.preventDefault();
-
-      if (event.currentTarget === moreDownButton) {
-        scrollToNextSection();
-      } else {
-        scrollToPreviousSection();
-      }
-    };
-
-    const intersectionObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
+          if (index !== active) {
+            render(index);
           }
 
-          const index = sections.indexOf(entry.target);
-
-          if (index === -1 || index === activeIndex) {
-            return;
+          if (pending === index && experience && Math.abs(track.scrollTop - experience.offsetTop) < 2) {
+            pending = null;
           }
-
-          activeIndex = index;
-          setArrowVisibility(activeIndex);
         });
       },
-      {
-        root: mainContainer,
-        threshold: 0.6
-      }
+      { passive: true }
     );
 
-    sections.forEach((section) => intersectionObserver.observe(section));
-
-    moreDownButton.addEventListener("click", handleArrowClick);
-    moreUpButton.addEventListener("click", handleArrowClick);
-    document.addEventListener("keydown", handleKeyDown);
-
-    window.requestAnimationFrame(() => {
-      ensureSectionPositions();
-
-      const visibleIndex = sections.findIndex((section, index) => {
-        const top = sectionPositions[index];
-        const bottom = top + section.clientHeight;
-        const scrollMiddle =
-          mainContainer.scrollTop + mainContainer.clientHeight / 2;
-
-        return scrollMiddle >= top && scrollMiddle < bottom;
+    steps.forEach(button => {
+      button.addEventListener("click", () => {
+        if (button.getAttribute("aria-disabled") !== "true") {
+          step(Number(button.dataset.cvStep));
+        }
       });
+    });
 
-      if (visibleIndex >= 0) {
-        activeIndex = visibleIndex;
+    document.addEventListener("keydown", event => {
+      const direction = keys[event.key];
+
+      if (!direction || event.altKey || event.ctrlKey || event.metaKey || event.defaultPrevented) {
+        return;
       }
 
-      setArrowVisibility(activeIndex);
-    });
+      event.preventDefault();
 
-    const handleResize = () => {
-      sectionPositions = [];
-      ensureSectionPositions();
-      const currentIndex = sections.findIndex((section, index) => {
-        const top = sectionPositions[index];
-        const bottom = top + section.clientHeight;
-        const scrollMiddle =
-          mainContainer.scrollTop + mainContainer.clientHeight / 2;
+      const current = experiences[active];
 
-        return scrollMiddle >= top && scrollMiddle < bottom;
-      });
+      // An entry taller than the paper scrolls through itself before moving on.
+      if (pending === null && current) {
+        const view = track.getBoundingClientRect();
+        const rect = current.getBoundingClientRect();
+        const hidden = direction > 0 ? rect.bottom - view.bottom : view.top - rect.top;
 
-      if (currentIndex >= 0 && currentIndex !== activeIndex) {
-        activeIndex = currentIndex;
+        if (hidden > 1) {
+          track.scrollBy({ top: direction * Math.min(hidden, view.height * 0.8), behavior: behavior() });
+          return;
+        }
       }
 
-      setArrowVisibility(activeIndex);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    const cleanup = () => {
-      intersectionObserver.disconnect();
-      moreDownButton.removeEventListener("click", handleArrowClick);
-      moreUpButton.removeEventListener("click", handleArrowClick);
-      document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("resize", handleResize);
-    };
-
-    const handleBeforeSwap = () => {
-      cleanup();
-    };
-
-    document.addEventListener("astro:before-swap", handleBeforeSwap, {
-      once: true
+      step(direction);
     });
 
-    return () => {
-      cleanup();
-      document.removeEventListener("astro:before-swap", handleBeforeSwap);
-    };
-  };
+    render(indexAtScroll());
+  }
+</script>
 
-  const initializeNavigation = () => {
-    if (typeof teardown === "function") {
-      teardown();
-    }
-
-    teardown = setupNavigation();
-  };
-
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    initializeNavigation();
-  } else {
-    document.addEventListener("DOMContentLoaded", initializeNavigation, {
-      once: true
-    });
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75em;
+    position: relative;
+    color: inherit;
+    text-decoration: none;
   }
 
-  document.addEventListener("astro:page-load", initializeNavigation);
-</script>
+  /* Extends the tap target past the thin frame bar without changing its height. */
+  .back::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -0.75rem;
+    left: -0.75rem;
+    height: max(100%, 2.75rem);
+    transform: translateY(-50%);
+  }
+
+  .back svg {
+    width: 1.6em;
+    height: auto;
+    flex: none;
+  }
+
+  @media (hover: hover) {
+    .back:hover > span {
+      text-decoration: underline;
+      text-underline-offset: 0.3em;
+    }
+  }
+
+  .back:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 0.35rem;
+    border-radius: 3px;
+  }
+
+  .progress {
+    position: absolute;
+    top: clamp(0.875rem, 2.4vw, 2rem);
+    right: clamp(1rem, 2.8vw, 2.5rem);
+    z-index: 1;
+    margin: 0;
+    padding-bottom: 0.3em;
+    border-bottom: 2px solid theme("colors.ink");
+    font-family: theme("fontFamily.mono");
+    font-size: clamp(0.8125rem, 1.45vw, 1.25rem);
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+  }
+
+  .track {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .track:focus-visible {
+    outline: 3px solid theme("colors.cobalt");
+    outline-offset: -6px;
+  }
+
+  .steps {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: flex;
+    align-items: center;
+    height: max(var(--frame-bottom), 2.75rem);
+    color: theme("colors.paper");
+  }
+
+  .step {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .step svg {
+    width: 1.125rem;
+    height: auto;
+  }
+
+  .step[aria-disabled="true"] {
+    opacity: 0.25;
+    cursor: default;
+  }
+
+  @media (hover: hover) {
+    .step:not([aria-disabled="true"]):hover {
+      color: theme("colors.riso.yellow");
+    }
+  }
+
+  .step:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  @media (min-width: 1024px) {
+    .steps {
+      top: 50%;
+      right: clamp(0.75rem, 2.2vw, 2.25rem);
+      flex-direction: column;
+      gap: clamp(3rem, 22vh, 12rem);
+      height: auto;
+      color: theme("colors.ink");
+      transform: translateY(-50%);
+    }
+
+    .step {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    .step svg {
+      width: clamp(1.25rem, 1.75vw, 1.75rem);
+    }
+
+    @media (hover: hover) {
+      .step:not([aria-disabled="true"]):hover {
+        color: theme("colors.riso.red");
+      }
+    }
+  }
+</style>

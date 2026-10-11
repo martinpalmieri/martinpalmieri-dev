@@ -1,0 +1,135 @@
+---
+import { Picture } from "astro:assets";
+import type { CompanyExperience } from "../../data/cv";
+
+interface Props extends CompanyExperience {
+  eager?: boolean;
+}
+
+const { id, name, image, roles, eager = false } = Astro.props;
+const headingId = `${id}-title`;
+---
+
+<article id={id} class="experience" aria-labelledby={headingId} data-cv-experience={name}>
+  <h2 id={headingId} class="company">
+    <Picture
+      src={image}
+      alt={name}
+      formats={["avif", "webp"]}
+      fallbackFormat="webp"
+      widths={[480, 720, 960, 1200]}
+      sizes="(min-width: 1024px) 37vw, (min-width: 600px) and (min-aspect-ratio: 3/2) 40vw, min(36rem, 100vw - 4rem)"
+      loading={eager ? "eager" : "lazy"}
+      fetchpriority={eager ? "high" : undefined}
+    />
+  </h2>
+  <div class="roles">
+    {
+      roles.map(({ title, start, end, description }) => (
+        <div class="role">
+          <h3 class="title">{title}</h3>
+          <p class="dates">
+            <time datetime={start.datetime}>{start.label}</time> –{" "}
+            {end.datetime ? <time datetime={end.datetime}>{end.label}</time> : end.label}
+          </p>
+          <p class="description">{description}</p>
+        </div>
+      ))
+    }
+  </div>
+</article>
+
+<style>
+  .experience {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    row-gap: clamp(1.5rem, 5vw, 2.5rem);
+    min-height: 100%;
+    padding: 3.5rem clamp(1.25rem, 6vw, 4rem) 2rem;
+    scroll-snap-align: start;
+  }
+
+  .company {
+    container-type: inline-size;
+    max-width: 36rem;
+    margin: 0;
+  }
+
+  /* Caps on both axes keep short or stacked names (Bird, Royal Schiphol Group) from towering over long ones. */
+  .company :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: min(53cqi, 24svh);
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .roles {
+    display: grid;
+    gap: clamp(1.25rem, 3.5vh, 2.75rem);
+  }
+
+  /* Dates read after the role title in the document but sit above it visually. */
+  .role {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dates {
+    order: -1;
+    margin: 0 0 clamp(0.75rem, 1.6vw, 1.25rem);
+    padding: 0.4em 0.75em 0.35em;
+    background: theme("colors.riso.yellow");
+    font-family: theme("fontFamily.mono");
+    font-size: clamp(0.8125rem, 1.4vw, 1.1875rem);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    clip-path: polygon(0 6%, 4% 0, 96% 5%, 100% 0, 99% 94%, 100% 100%, 3% 95%, 0 100%);
+    transform: rotate(-1.5deg);
+  }
+
+  .title {
+    margin: 0 0 clamp(0.75rem, 1.4vw, 1.25rem);
+    font-size: clamp(1.5rem, 2.9vw, 3rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .description {
+    max-width: 34em;
+    margin: 0;
+    font-size: clamp(1rem, 0.6rem + 0.75vw, 1.3rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 1024px), (min-width: 600px) and (min-aspect-ratio: 3/2) {
+    .experience {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      column-gap: clamp(1.5rem, 5.5vw, 6.5rem);
+      padding: clamp(2.75rem, 7vh, 6rem) clamp(1.5rem, 5vw, 5.5rem) clamp(1rem, 6vh, 5rem);
+    }
+
+    .company {
+      max-width: none;
+    }
+
+    .company :global(img) {
+      max-height: min(58cqi, 42vh);
+      object-position: center;
+    }
+  }
+
+  /* Room for the arrows, which sit inside the paper from this width up. */
+  @media (min-width: 1024px) {
+    .experience {
+      padding-right: clamp(5.5rem, 10vw, 10rem);
+    }
+  }
+</style>

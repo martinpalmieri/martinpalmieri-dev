@@ -1,20 +1,55 @@
 ---
-import Link from "./Link.astro";
 import contact from "../data/contact.json";
 ---
 
-<footer class="fixed bottom-0 right-0 z-10 bg-white bg-opacity-80 p-4">
+<footer class="footer">
   <nav aria-label="Social media and contact links">
-    <ul class="flex space-x-2">
+    <ul class="links">
       <li>
-        <Link href={contact.linkedin} label="LinkedIn" />
+        <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
+          LinkedIn<span class="sr-only"> (opens in a new tab)</span>
+        </a>
       </li>
       <li>
-        <Link href={contact.github} label="GitHub" />
+        <a href={contact.github} target="_blank" rel="noopener noreferrer">
+          GitHub<span class="sr-only"> (opens in a new tab)</span>
+        </a>
       </li>
-      <li>
-        <Link href={`mailto:${contact.email}`} label="Email" />
-      </li>
+      <li><a href={`mailto:${contact.email}`}>Email</a></li>
     </ul>
   </nav>
 </footer>
+
+<style>
+  .links {
+    display: flex;
+    gap: 0.25em;
+  }
+
+  a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-inline: 0.5em;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  li:first-child a {
+    margin-left: -0.5em;
+  }
+
+  @media (hover: hover) {
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.3em;
+    }
+  }
+
+  a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -0.35rem;
+    border-radius: 3px;
+  }
+</style>
