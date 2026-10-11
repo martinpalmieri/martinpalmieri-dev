@@ -2,7 +2,7 @@
   {
     "company": {
       "name": "Treatwell",
-      "img": ""
+      "img": "treatwell.png"
     },
     "startDate": "2026-09-01T00:00:00Z",
     "endDate": null,
@@ -12,7 +12,7 @@
   {
     "company": {
       "name": "Bird",
-      "img": ""
+      "img": "bird.png"
     },
     "startDate": "2024-08-01T00:00:00Z",
     "endDate": "2026-08-01T00:00:00Z",
@@ -22,7 +22,7 @@
   {
     "company": {
       "name": "Royal Schiphol Group",
-      "img": ""
+      "img": "royal-schiphol-group.png"
     },
     "startDate": "2023-05-01T00:00:00Z",
     "endDate": "2024-08-01T00:00:00Z",
@@ -32,7 +32,7 @@
   {
     "company": {
       "name": "Typeform",
-      "img": ""
+      "img": "typeform.png"
     },
     "startDate": "2022-04-01T00:00:00Z",
     "endDate": "2022-12-01T00:00:00Z",
@@ -42,7 +42,7 @@
   {
     "company": {
       "name": "Foleon",
-      "img": ""
+      "img": "foleon.png"
     },
     "startDate": "2021-07-01T00:00:00Z",
     "endDate": "2022-04-01T00:00:00Z",
@@ -52,7 +52,7 @@
   {
     "company": {
       "name": "Foleon",
-      "img": ""
+      "img": "foleon.png"
     },
     "startDate": "2019-05-01T00:00:00Z",
     "endDate": "2021-07-01T00:00:00Z",
@@ -62,7 +62,7 @@
   {
     "company": {
       "name": "Novility",
-      "img": ""
+      "img": "novility.png"
     },
     "startDate": "2018-11-01T00:00:00Z",
     "endDate": "2019-05-01T00:00:00Z",
@@ -72,7 +72,7 @@
   {
     "company": {
       "name": "Amaris",
-      "img": ""
+      "img": "amaris.png"
     },
     "startDate": "2017-05-01T00:00:00Z",
     "endDate": "2018-10-01T00:00:00Z",
@@ -82,7 +82,7 @@
   {
     "company": {
       "name": "Globant",
-      "img": ""
+      "img": "globant.png"
     },
     "startDate": "2015-10-01T00:00:00Z",
     "endDate": "2017-05-01T00:00:00Z",
