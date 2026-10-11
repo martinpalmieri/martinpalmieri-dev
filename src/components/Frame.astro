@@ -1,0 +1,83 @@
+---
+interface Props {
+  /** Pins the frame to the viewport, for pages that scroll inside the paper. */
+  fixed?: boolean;
+}
+
+const { fixed = false } = Astro.props;
+const hasBottom = Astro.slots.has("bottom");
+---
+
+<div class:list={["frame", { "frame--fixed": fixed, "frame--with-bottom": hasBottom }]}>
+  <header class="frame-top">
+    <slot name="top" />
+  </header>
+  <div class="paper">
+    <slot />
+  </div>
+  {
+    hasBottom && (
+      <div class="frame-bottom">
+        <slot name="bottom" />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .frame {
+    --frame-x: clamp(10px, 2.6vw, 44px);
+    --frame-top: clamp(34px, 4.6vw, 76px);
+    --frame-bottom: clamp(10px, 3vw, 48px);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 0 var(--frame-x) var(--frame-bottom);
+    background-color: theme("colors.cobalt");
+    background-image: var(--grain-cobalt);
+  }
+
+  .frame--fixed {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  .frame--with-bottom {
+    padding-bottom: 0;
+  }
+
+  .frame-top,
+  .frame-bottom {
+    display: flex;
+    align-items: center;
+    padding-inline: 0.75em;
+    color: theme("colors.paper");
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  .frame-top {
+    min-height: var(--frame-top);
+    font-size: clamp(0.8125rem, 1.4vw, 1.375rem);
+  }
+
+  .frame-bottom {
+    min-height: max(var(--frame-bottom), 2.75rem);
+    font-size: clamp(0.75rem, 1.05vw, 1rem);
+  }
+
+  .paper {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background-color: theme("colors.paper");
+    background-image: var(--grain-paper);
+  }
+
+  .frame--fixed .paper {
+    min-height: 0;
+  }
+</style>
