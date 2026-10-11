@@ -1,13 +1,23 @@
 [
   {
     "company": {
+      "name": "Treatwell",
+      "img": ""
+    },
+    "startDate": "2026-09-01T00:00:00Z",
+    "endDate": null,
+    "title": "Software Engineer",
+    "description": "Building and improving Treatwell Connect, the SaaS product used by salons to manage their business. Working on the frontend to deliver product improvements, improve day-to-day workflows, and make the experience more reliable and polished."
+  },
+  {
+    "company": {
       "name": "Bird",
       "img": ""
     },
     "startDate": "2024-08-01T00:00:00Z",
-    "endDate": null,
+    "endDate": "2026-08-01T00:00:00Z",
     "title": "Hands-on Team Lead / Senior Frontend Developer",
-    "description": "Leading the Bird Inbox team while remaining hands-on in frontend development. Responsible for roadmap decisions, customer interactions, and driving product improvements. Focused on delivering scalable and efficient solutions for Bird AI CRM."
+    "description": "Led the Bird Inbox team while remaining hands-on in frontend development. Responsible for roadmap decisions, customer interactions, and driving product improvements. Focused on delivering scalable and efficient solutions for Bird AI CRM."
   },
   {
     "company": {
