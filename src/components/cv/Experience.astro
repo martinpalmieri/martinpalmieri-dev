@@ -10,7 +10,12 @@ const { id, name, image, roles, eager = false } = Astro.props;
 const headingId = `${id}-title`;
 ---
 
-<article id={id} class="experience" aria-labelledby={headingId} data-cv-experience={name}>
+<article
+  id={id}
+  class:list={["experience", { compact: roles.length > 1 }]}
+  aria-labelledby={headingId}
+  data-cv-experience={name}
+>
   <h2 id={headingId} class="company">
     <Picture
       src={image}
@@ -46,7 +51,7 @@ const headingId = `${id}-title`;
     align-content: center;
     row-gap: clamp(1.5rem, 5vw, 2.5rem);
     min-height: 100%;
-    padding: 3.5rem clamp(1.25rem, 6vw, 4rem) 2rem;
+    padding: clamp(1.5rem, 6vw, 3rem) clamp(1.25rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2rem);
     scroll-snap-align: start;
   }
 
@@ -108,12 +113,42 @@ const headingId = `${id}-title`;
     text-wrap: pretty;
   }
 
+  /* Several roles share the screen, so phones get smaller art and tighter spacing and text. */
+  @media (max-width: 599px) {
+    .compact {
+      row-gap: 1rem;
+      padding-block: 1rem;
+    }
+
+    .compact .company :global(img) {
+      max-height: min(27cqi, 13svh);
+    }
+
+    .compact .roles {
+      gap: 1.25rem;
+    }
+
+    .compact .dates,
+    .compact .title {
+      margin-bottom: 0.5rem;
+    }
+
+    .compact .title {
+      font-size: 1.375rem;
+    }
+
+    .compact .description {
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+  }
+
   @media (min-width: 1024px), (min-width: 600px) and (min-aspect-ratio: 3/2) {
     .experience {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: center;
       column-gap: clamp(1.5rem, 5.5vw, 6.5rem);
-      padding: clamp(2.75rem, 7vh, 6rem) clamp(1.5rem, 5vw, 5.5rem) clamp(1rem, 6vh, 5rem);
+      padding: clamp(1.25rem, 5vh, 3rem) clamp(1.5rem, 5vw, 5.5rem) clamp(1rem, 6vh, 5rem);
     }
 
     .company {
@@ -126,9 +161,10 @@ const headingId = `${id}-title`;
     }
   }
 
-  /* Room for the arrows, which sit inside the paper from this width up. */
+  /* Room for the counter and arrows, which sit inside the paper from this width up. */
   @media (min-width: 1024px) {
     .experience {
+      padding-top: clamp(2.75rem, 7vh, 6rem);
       padding-right: clamp(5.5rem, 10vw, 10rem);
     }
   }
