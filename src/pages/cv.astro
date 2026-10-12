@@ -214,16 +214,16 @@ const total = String(companies.length).padStart(2, "0");
 
   .progress {
     position: absolute;
-    top: clamp(0.875rem, 2.4vw, 2rem);
-    right: clamp(1rem, 2.8vw, 2.5rem);
+    top: calc(var(--frame-top) / -2);
+    right: 0.75em;
     z-index: 1;
     margin: 0;
-    padding-bottom: 0.3em;
-    border-bottom: 2px solid theme("colors.ink");
+    color: theme("colors.paper");
     font-family: theme("fontFamily.mono");
     font-size: clamp(0.8125rem, 1.45vw, 1.25rem);
     line-height: 1.2;
     letter-spacing: 0.04em;
+    transform: translateY(-50%);
   }
 
   .track {
@@ -291,6 +291,15 @@ const total = String(companies.length).padStart(2, "0");
   }
 
   @media (min-width: 1024px) {
+    .progress {
+      top: clamp(0.875rem, 2.4vw, 2rem);
+      right: clamp(1rem, 2.8vw, 2.5rem);
+      padding-bottom: 0.3em;
+      border-bottom: 2px solid theme("colors.ink");
+      color: inherit;
+      transform: none;
+    }
+
     .steps {
       top: 50%;
       right: clamp(0.75rem, 2.2vw, 2.25rem);
