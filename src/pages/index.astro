@@ -5,6 +5,7 @@ import HomeDialog from "../components/home/HomeDialog.astro";
 import NavTile from "../components/home/NavTile.astro";
 import Wordmark from "../components/home/Wordmark.astro";
 import contact from "../data/contact.json";
+import { features } from "../data/features";
 import antonUrl from "../assets/fonts/anton-latin.woff2?url";
 import cvIcon from "../assets/home/icon-cv.png";
 import musicIcon from "../assets/home/icon-music.png";
@@ -30,30 +31,45 @@ export const prerender = true;
       <nav aria-label="Main">
         <ul class="tiles">
           <li><NavTile label="CV" image={cvIcon} href="/cv" /></li>
-          <li><NavTile label="Music" image={musicIcon} dialog="music-dialog" /></li>
-          <li><NavTile label="Art" image={artIcon} dialog="art-dialog" /></li>
+          {features.music && (
+            <li><NavTile label="Music" image={musicIcon} dialog="music-dialog" /></li>
+          )}
+          {features.art && (
+            <li><NavTile label="Art" image={artIcon} dialog="art-dialog" /></li>
+          )}
           <li><NavTile label="Contact" image={contactIcon} dialog="contact-dialog" /></li>
         </ul>
       </nav>
     </main>
   </Frame>
 
-  <HomeDialog id="music-dialog" title="Music" describedby="music-dialog-status">
-    <p id="music-dialog-status" class="stamp">Coming soon</p>
-  </HomeDialog>
-  <HomeDialog id="art-dialog" title="Art" describedby="art-dialog-status">
-    <p id="art-dialog-status" class="stamp">Coming soon</p>
-  </HomeDialog>
+  {features.music && (
+    <HomeDialog id="music-dialog" title="Music" describedby="music-dialog-status">
+      <p id="music-dialog-status" class="stamp">Coming soon</p>
+    </HomeDialog>
+  )}
+  {features.art && (
+    <HomeDialog id="art-dialog" title="Art" describedby="art-dialog-status">
+      <p id="art-dialog-status" class="stamp">Coming soon</p>
+    </HomeDialog>
+  )}
   <HomeDialog id="contact-dialog" title="Contact">
     <ul class="actions">
       <li><a class="action" href={`mailto:${contact.email}`}>Email me</a></li>
+      {features.linkedin && (
+        <li>
+          <a
+            class="action linkedin"
+            href={contact.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      )}
       <li>
-        <a class="action" href={contact.linkedin} target="_blank" rel="noopener noreferrer">
-          LinkedIn<span class="sr-only"> (opens in a new tab)</span>
-        </a>
-      </li>
-      <li>
-        <a class="action" href={contact.github} target="_blank" rel="noopener noreferrer">
+        <a class="action github" href={contact.github} target="_blank" rel="noopener noreferrer">
           GitHub<span class="sr-only"> (opens in a new tab)</span>
         </a>
       </li>
@@ -98,16 +114,22 @@ export const prerender = true;
   }
 
   .tiles {
-    --cols: 2;
     --tile: min(40vw, 18svh, 220px);
+    --column-gap: clamp(1rem, 6vw, 2.5rem);
     display: grid;
-    grid-template-columns: repeat(var(--cols), minmax(0, var(--tile)));
+    grid-template-columns: repeat(2, minmax(0, var(--tile)));
     justify-content: center;
-    gap: clamp(1rem, 3svh, 2rem) clamp(1rem, 6vw, 2.5rem);
+    gap: clamp(1rem, 3svh, 2rem) var(--column-gap);
   }
 
   .tiles > li:nth-child(even) {
     --tilt: 2deg;
+  }
+
+  .tiles > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--column-gap)) / 2);
   }
 
   .stamp {
@@ -145,11 +167,11 @@ export const prerender = true;
     text-transform: uppercase;
   }
 
-  .actions > li:nth-child(2) .action {
+  .action.linkedin {
     background: theme("colors.riso.red");
   }
 
-  .actions > li:nth-child(3) .action {
+  .action.github {
     background: theme("colors.riso.purple");
     color: theme("colors.paper");
   }
@@ -191,9 +213,17 @@ export const prerender = true;
 
   @media (min-width: 1024px), (min-width: 600px) and (min-aspect-ratio: 3/2) {
     .tiles {
-      --cols: 4;
       --tile: min(20vw, 31svh, 380px);
-      column-gap: clamp(1.5rem, 3.5vw, 4rem);
+      --column-gap: clamp(1.5rem, 3.5vw, 4rem);
+      grid-template-columns: none;
+      grid-auto-columns: minmax(0, var(--tile));
+      grid-auto-flow: column;
+    }
+
+    .tiles > li:last-child:nth-child(odd) {
+      grid-column: auto;
+      justify-self: stretch;
+      width: auto;
     }
   }
 </style>

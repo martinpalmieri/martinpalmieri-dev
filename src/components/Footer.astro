@@ -1,15 +1,18 @@
 ---
 import contact from "../data/contact.json";
+import { features } from "../data/features";
 ---
 
 <footer class="footer">
   <nav aria-label="Social media and contact links">
     <ul class="links">
-      <li>
-        <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
-          LinkedIn<span class="sr-only"> (opens in a new tab)</span>
-        </a>
-      </li>
+      {features.linkedin && (
+        <li>
+          <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
+            LinkedIn<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      )}
       <li>
         <a href={contact.github} target="_blank" rel="noopener noreferrer">
           GitHub<span class="sr-only"> (opens in a new tab)</span>
