@@ -14,7 +14,7 @@ export function formatISODate(dateString: string): string {
     "Nov",
     "Dec"
   ];
-  const monthIndex = date.getMonth();
-  const year = date.getFullYear();
+  const monthIndex = date.getUTCMonth();
+  const year = date.getUTCFullYear();
   return `${monthNames[monthIndex]} ${year}`;
 }

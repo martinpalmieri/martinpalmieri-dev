@@ -27,7 +27,7 @@ Thank you for visiting!
 
 ## Development
 
-This project targets Node.js 20.11.1 (see `.nvmrc`). After installing dependencies with `npm install`, the most common workflows are:
+This project targets Node.js 22.12.0 (see `.nvmrc`). After installing dependencies with `npm install`, the most common workflows are:
 
 - `npm run dev` – start the local development server.
 - `npm run build` – generate the production build used for deployment.
