@@ -1,24 +1,32 @@
 ---
 import contact from "../data/contact.json";
 import { features } from "../data/features";
+import { t, type Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
 ---
 
 <footer class="footer">
-  <nav aria-label="Social media and contact links">
+  <nav aria-label={copy.footer.navLabel}>
     <ul class="links">
       {features.linkedin && (
         <li>
           <a href={contact.linkedin} target="_blank" rel="noopener noreferrer">
-            LinkedIn<span class="sr-only"> (opens in a new tab)</span>
+            LinkedIn<span class="sr-only"> ({copy.opensInNewTab})</span>
           </a>
         </li>
       )}
       <li>
         <a href={contact.github} target="_blank" rel="noopener noreferrer">
-          GitHub<span class="sr-only"> (opens in a new tab)</span>
+          GitHub<span class="sr-only"> ({copy.opensInNewTab})</span>
         </a>
       </li>
-      <li><a href={`mailto:${contact.email}`}>Email</a></li>
+      <li><a href={`mailto:${contact.email}`}>{copy.footer.email}</a></li>
     </ul>
   </nav>
 </footer>

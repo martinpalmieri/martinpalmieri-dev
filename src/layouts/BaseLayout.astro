@@ -1,30 +1,47 @@
 ---
 import "../styles/global.css";
 
+interface Alternate {
+  hreflang: string;
+  href: string;
+}
+
 interface BaseLayoutProps {
   title?: string;
   description?: string;
   bodyClass?: string;
+  lang?: string;
+  alternates?: Alternate[];
 }
 
 const {
   title = "Martín Palmieri | Frontend/Software Developer",
   description = "Martín Palmieri Frontend/Software Developer.",
-  bodyClass
+  bodyClass,
+  lang = "en",
+  alternates = [],
 } = Astro.props as BaseLayoutProps;
+
+const toAbsoluteUrl = (path: string) => {
+  const base = Astro.site ?? Astro.url;
+  return new URL(path, base).toString();
+};
 
 const canonicalUrl = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).toString()
   : Astro.url.href;
 ---
 
-<html lang="en" transition:animate="slide">
+<html lang={lang} transition:animate="slide">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    {alternates.map(({ hreflang, href }) => (
+      <link rel="alternate" hreflang={hreflang} href={toAbsoluteUrl(href)} />
+    ))}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

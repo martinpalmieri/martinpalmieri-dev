@@ -6,6 +6,9 @@ import vercel from "@astrojs/vercel";
 export default defineConfig({
   site: "https://martinpalmieri.dev",
   compressHTML: true,
+  markdown: {
+    smartypants: false,
+  },
   output: "server",
   adapter: vercel({
     webAnalytics: { enabled: true }

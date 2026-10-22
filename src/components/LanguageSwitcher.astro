@@ -1,0 +1,88 @@
+---
+import { hasLocalePair, switchLocalePath, t, type Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+const pathname = Astro.url.pathname;
+const enHref = switchLocalePath(pathname, "en");
+const esHref = switchLocalePath(pathname, "es");
+const enNeedsHomeHint = locale === "es" && !hasLocalePair(pathname);
+---
+
+<nav class="lang" aria-label={copy.languageNav}>
+  <a
+    class="lang-link"
+    href={enHref}
+    hreflang="en"
+    lang="en"
+    aria-label={enNeedsHomeHint ? copy.englishHome : copy.english}
+    aria-current={locale === "en" ? "page" : undefined}
+    title={enNeedsHomeHint ? copy.englishHome : undefined}
+  >
+    EN
+  </a>
+  <span class="sep" aria-hidden="true">/</span>
+  <a
+    class="lang-link"
+    href={esHref}
+    hreflang="es"
+    lang="es"
+    aria-label={copy.spanish}
+    aria-current={locale === "es" ? "page" : undefined}
+  >
+    ES
+  </a>
+</nav>
+
+<style>
+  .lang {
+    display: flex;
+    flex: none;
+    align-items: center;
+    margin-inline-start: auto;
+    color: inherit;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sep {
+    padding-inline: 0.05em;
+    opacity: 0.7;
+  }
+
+  .lang-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.15em 0.2em;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .lang-link[aria-current="page"] {
+    text-decoration: underline;
+    text-underline-offset: 0.28em;
+    text-decoration-thickness: 1.5px;
+  }
+
+  @media (hover: hover) {
+    .lang-link:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.28em;
+    }
+  }
+
+  .lang-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -0.35rem;
+    border-radius: 3px;
+  }
+</style>

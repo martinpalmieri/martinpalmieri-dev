@@ -1,0 +1,255 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Frame from "../Frame.astro";
+import HomeDialog from "./HomeDialog.astro";
+import NavTile from "./NavTile.astro";
+import Wordmark from "./Wordmark.astro";
+import contact from "../../data/contact.json";
+import { features } from "../../data/features";
+import { cvPath, hreflangAlternates, t, type Locale } from "../../i18n";
+import antonUrl from "../../assets/fonts/anton-latin.woff2?url";
+import cvIcon from "../../assets/home/icon-cv.png";
+import readIcon from "../../assets/home/icon-read.svg";
+import musicIcon from "../../assets/home/icon-music.png";
+import artIcon from "../../assets/home/icon-art.png";
+import contactIcon from "../../assets/home/icon-contact.png";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  locale: Locale;
+}
+
+interface Tile {
+  label: string;
+  image: ImageMetadata;
+  href?: string;
+  dialog?: string;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+
+const tiles: Tile[] = [
+  { label: copy.tiles.cv, image: cvIcon, href: cvPath(locale) },
+  ...(locale === "es" ? [{ label: copy.tiles.read, image: readIcon, href: "/leer" }] : []),
+  ...(features.music ? [{ label: copy.tiles.music, image: musicIcon, dialog: "music-dialog" }] : []),
+  ...(features.art ? [{ label: copy.tiles.art, image: artIcon, dialog: "art-dialog" }] : []),
+  { label: copy.tiles.contact, image: contactIcon, dialog: "contact-dialog" },
+];
+---
+
+<BaseLayout
+  lang={locale}
+  title={copy.siteTitle}
+  description={copy.siteDescription}
+  bodyClass="bg-cobalt"
+  alternates={hreflangAlternates("home")}
+>
+  <Fragment slot="head">
+    <link rel="preload" href={antonUrl} as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#03298F" />
+  </Fragment>
+
+  <Frame locale={locale}>
+    <Fragment slot="top">martinpalmieri.dev</Fragment>
+    <main class="home">
+      <h1 class="wordmark">
+        <span class="sr-only">Martín Palmieri</span>
+        <Wordmark />
+      </h1>
+      <nav aria-label={copy.mainNav}>
+        <ul class="tiles">
+          {tiles.map(tile => (
+            <li>
+              <NavTile {...tile} />
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </main>
+  </Frame>
+
+  {features.music && (
+    <HomeDialog id="music-dialog" title={copy.tiles.music} closeLabel={copy.close} describedby="music-dialog-status">
+      <p id="music-dialog-status" class="stamp">{copy.comingSoon}</p>
+    </HomeDialog>
+  )}
+  {features.art && (
+    <HomeDialog id="art-dialog" title={copy.tiles.art} closeLabel={copy.close} describedby="art-dialog-status">
+      <p id="art-dialog-status" class="stamp">{copy.comingSoon}</p>
+    </HomeDialog>
+  )}
+  <HomeDialog id="contact-dialog" title={copy.tiles.contact} closeLabel={copy.close}>
+    <ul class="actions">
+      <li><a class="action" href={`mailto:${contact.email}`}>{copy.emailMe}</a></li>
+      {features.linkedin && (
+        <li>
+          <a
+            class="action linkedin"
+            href={contact.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn<span class="sr-only"> ({copy.opensInNewTab})</span>
+          </a>
+        </li>
+      )}
+      <li>
+        <a class="action github" href={contact.github} target="_blank" rel="noopener noreferrer">
+          GitHub<span class="sr-only"> ({copy.opensInNewTab})</span>
+        </a>
+      </li>
+    </ul>
+  </HomeDialog>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-dialog-target]").forEach(trigger => {
+    const dialog = document.getElementById(trigger.dataset.dialogTarget ?? "");
+
+    if (!(dialog instanceof HTMLDialogElement)) {
+      return;
+    }
+
+    trigger.addEventListener("click", () => dialog.showModal());
+    // Safari doesn't focus buttons on click, so the native focus restore has nothing to return to.
+    dialog.addEventListener("close", () => trigger.focus({ preventScroll: true }));
+    // Clicks on the backdrop are dispatched to the dialog element itself.
+    dialog.addEventListener("click", event => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    });
+  });
+</script>
+
+<style>
+  .home {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.75rem, 4svh, 3.5rem);
+    padding: clamp(0.75rem, 3svh, 3rem) clamp(1rem, 3.3vw, 3rem);
+  }
+
+  .wordmark,
+  nav {
+    width: 100%;
+  }
+
+  .tiles {
+    --tile: min(40vw, 18svh, 220px);
+    --column-gap: clamp(1rem, 6vw, 2.5rem);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, var(--tile)));
+    justify-content: center;
+    gap: clamp(1rem, 3svh, 2rem) var(--column-gap);
+  }
+
+  .tiles > li:nth-child(even) {
+    --tilt: 2deg;
+  }
+
+  .tiles > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--column-gap)) / 2);
+  }
+
+  .stamp {
+    display: inline-block;
+    margin: 0.25rem 0 0.5rem;
+    padding: 0.3em 0.6em 0.25em;
+    border: 3px solid currentColor;
+    color: theme("colors.riso.red");
+    font-family: theme("fontFamily.display");
+    font-size: 1.75rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+  }
+
+  .actions {
+    display: grid;
+    gap: 0.875rem;
+  }
+
+  .action {
+    display: flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding: 0.6rem 1rem 0.5rem;
+    border: 3px solid theme("colors.ink");
+    background: theme("colors.riso.yellow");
+    box-shadow: 4px 4px 0 theme("colors.ink");
+    color: theme("colors.ink");
+    font-family: theme("fontFamily.display");
+    font-size: 1.75rem;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .action.linkedin {
+    background: theme("colors.riso.red");
+  }
+
+  .action.github {
+    background: theme("colors.riso.purple");
+    color: theme("colors.paper");
+  }
+
+  .action:focus-visible {
+    outline: 3px solid theme("colors.cobalt");
+    outline-offset: 4px;
+  }
+
+  @media (hover: hover) {
+    .action:hover {
+      box-shadow: 6px 6px 0 theme("colors.ink");
+      transform: translate(-2px, -2px);
+    }
+  }
+
+  .action:active {
+    box-shadow: 1px 1px 0 theme("colors.ink");
+    transform: translate(3px, 3px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .action {
+      transition:
+        transform 120ms ease-out,
+        box-shadow 120ms ease-out;
+    }
+  }
+
+  :global(html:has(dialog[open])) {
+    overflow: hidden;
+  }
+
+  @media (min-width: 600px) {
+    .tiles {
+      --tile: min(34vw, 24svh, 320px);
+    }
+  }
+
+  @media (min-width: 1024px), (min-width: 600px) and (min-aspect-ratio: 3/2) {
+    .tiles {
+      --tile: min(20vw, 31svh, 380px);
+      --column-gap: clamp(1.5rem, 3.5vw, 4rem);
+      grid-template-columns: none;
+      grid-auto-columns: minmax(0, var(--tile));
+      grid-auto-flow: column;
+    }
+
+    .tiles > li:last-child:nth-child(odd) {
+      grid-column: auto;
+      justify-self: stretch;
+      width: auto;
+    }
+  }
+</style>

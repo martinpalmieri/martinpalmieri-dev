@@ -10,6 +10,7 @@ interface Props {
 }
 
 const { label, image, href, dialog } = Astro.props;
+const isSvg = image.format === "svg";
 
 const Tag = href ? "a" : "button";
 const attributes = href
@@ -25,16 +26,22 @@ const attributes = href
 <Tag class="tile" {...attributes}>
   <span class="body">
     <span class="art">
-      <Picture
-        src={image}
-        alt=""
-        formats={["avif", "webp"]}
-        fallbackFormat="webp"
-        width={480}
-        widths={[240, 360, 480, 640, 800]}
-        sizes="(min-width: 1024px) min(20vw, 380px), (min-width: 600px) and (min-aspect-ratio: 3/2) min(20vw, 380px), (min-width: 600px) min(34vw, 320px), 40vw"
-        loading="eager"
-      />
+      {
+        isSvg ? (
+          <img src={image.src} alt="" width={image.width} height={image.height} loading="eager" />
+        ) : (
+          <Picture
+            src={image}
+            alt=""
+            formats={["avif", "webp"]}
+            fallbackFormat="webp"
+            width={480}
+            widths={[240, 360, 480, 640, 800]}
+            sizes="(min-width: 1024px) min(20vw, 380px), (min-width: 600px) and (min-aspect-ratio: 3/2) min(20vw, 380px), (min-width: 600px) min(34vw, 320px), 40vw"
+            loading="eager"
+          />
+        )
+      }
     </span>
     <span class="label">{label}</span>
   </span>

@@ -2,17 +2,18 @@
 interface Props {
   id: string;
   title: string;
+  closeLabel: string;
   describedby?: string;
 }
 
-const { id, title, describedby } = Astro.props;
+const { id, title, closeLabel, describedby } = Astro.props;
 const titleId = `${id}-title`;
 ---
 
 <dialog id={id} class="dialog" aria-labelledby={titleId} aria-describedby={describedby}>
   <div class="card">
     <form method="dialog">
-      <button type="submit" class="close">Close</button>
+      <button type="submit" class="close">{closeLabel}</button>
     </form>
     <h2 id={titleId} class="title">{title}</h2>
     <slot />

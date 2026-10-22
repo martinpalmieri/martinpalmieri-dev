@@ -1,16 +1,23 @@
 ---
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import type { Locale } from "../i18n";
+
 interface Props {
   /** Pins the frame to the viewport, for pages that scroll inside the paper. */
   fixed?: boolean;
+  locale: Locale;
 }
 
-const { fixed = false } = Astro.props;
+const { fixed = false, locale } = Astro.props;
 const hasBottom = Astro.slots.has("bottom");
 ---
 
 <div class:list={["frame", { "frame--fixed": fixed, "frame--with-bottom": hasBottom }]}>
   <header class="frame-top">
-    <slot name="top" />
+    <div class="frame-brand">
+      <slot name="top" />
+    </div>
+    <LanguageSwitcher locale={locale} />
   </header>
   <div class="paper">
     <slot />
@@ -61,6 +68,11 @@ const hasBottom = Astro.slots.has("bottom");
   .frame-top {
     min-height: var(--frame-top);
     font-size: clamp(0.8125rem, 1.4vw, 1.375rem);
+    gap: 0.5rem;
+  }
+
+  .frame-brand {
+    min-width: 0;
   }
 
   .frame-bottom {
