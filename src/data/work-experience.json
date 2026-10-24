@@ -1,5 +1,6 @@
 [
   {
+    "id": "treatwell-software-engineer",
     "company": {
       "name": "Treatwell",
       "img": "treatwell.png"
@@ -10,6 +11,7 @@
     "description": "Building and improving Treatwell Connect, the SaaS product used by salons to manage their business. Working on the frontend to deliver product improvements, improve day-to-day workflows, and make the experience more reliable and polished."
   },
   {
+    "id": "bird-team-lead",
     "company": {
       "name": "Bird",
       "img": "bird.png"
@@ -20,6 +22,7 @@
     "description": "Led the Bird Inbox team while remaining hands-on in frontend development. Responsible for roadmap decisions, customer interactions, and driving product improvements. Focused on delivering scalable and efficient solutions for Bird AI CRM."
   },
   {
+    "id": "royal-schiphol-group-senior-frontend",
     "company": {
       "name": "Royal Schiphol Group",
       "img": "royal-schiphol-group.png"
@@ -30,6 +33,7 @@
     "description": "Led the migration of legacy PHP applications to a modern React/Remix stack within the Premium Services team. Improved performance, developer experience, and maintainability across multiple applications."
   },
   {
+    "id": "typeform-engineering-manager",
     "company": {
       "name": "Typeform",
       "img": "typeform.png"
@@ -40,6 +44,7 @@
     "description": "Managed a team of 5 engineers, fostering collaboration and efficient project delivery. Developed individual growth plans, implemented retention strategies, and worked closely with Product Managers to refine requirements. Focused on scalable solutions and data-driven approaches to track progress and mitigate risks."
   },
   {
+    "id": "foleon-frontend-lead",
     "company": {
       "name": "Foleon",
       "img": "foleon.png"
@@ -50,6 +55,7 @@
     "description": "Led and mentored a team of 12 frontend developers, establishing best practices and ensuring code quality. Focused on talent acquisition, professional development, and maintaining a productive, supportive team environment."
   },
   {
+    "id": "foleon-senior-frontend",
     "company": {
       "name": "Foleon",
       "img": "foleon.png"
@@ -60,6 +66,7 @@
     "description": "Contributed to multiple projects, developing React-based solutions while maintaining a legacy Angular.js application. Ensured high-quality code standards and best practices across frontend development."
   },
   {
+    "id": "novility-senior-frontend",
     "company": {
       "name": "Novility",
       "img": "novility.png"
@@ -70,6 +77,7 @@
     "description": "Led frontend development for a new project, transitioning it to Angular 7. Designed and implemented responsive interfaces, collaborated closely with backend teams, and made key technical decisions to ensure seamless integration."
   },
   {
+    "id": "amaris-senior-frontend",
     "company": {
       "name": "Amaris",
       "img": "amaris.png"
@@ -80,6 +88,7 @@
     "description": "Worked on core projects for AXA Group Solutions, collaborating with cross-functional teams to deliver scalable frontend solutions. Ensured seamless integration with backend systems and maintained high code quality through reviews and best practices."
   },
   {
+    "id": "globant-senior-frontend",
     "company": {
       "name": "Globant",
       "img": "globant.png"

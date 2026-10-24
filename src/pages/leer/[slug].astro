@@ -1,0 +1,210 @@
+---
+import { render } from "astro:content";
+import ReadingLayout from "../../layouts/ReadingLayout.astro";
+import {
+  formatEscritoDate,
+  getEscritos,
+  isoDate,
+  type Escrito,
+} from "../../utils/escritos";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const escritos = await getEscritos();
+
+  return escritos.map((escrito, index) => ({
+    params: { slug: escrito.data.slug },
+    props: {
+      escrito,
+      prev: escritos[index - 1] ?? null,
+      next: escritos[index + 1] ?? null,
+    },
+  }));
+}
+
+interface Props {
+  escrito: Escrito;
+  prev: Escrito | null;
+  next: Escrito | null;
+}
+
+const { escrito, prev, next } = Astro.props;
+const { Content } = await render(escrito);
+const { title, date } = escrito.data;
+---
+
+<ReadingLayout
+  title={`${title} | Martín Palmieri`}
+  description={`${title} — un escrito de Martín Palmieri.`}
+>
+  <main>
+    <article>
+      <header class="story-header">
+        <h1>{title}</h1>
+        <p class="date">
+          <time datetime={isoDate(date)}>{formatEscritoDate(date)}</time>
+        </p>
+        <div class="story-rule" aria-hidden="true"></div>
+      </header>
+      <div class="story">
+        <Content />
+      </div>
+    </article>
+    {
+      (prev || next) && (
+        <nav class="story-footer" aria-label="Más escritos">
+          {prev && (
+            <a href={`/leer/${prev.data.slug}`}>
+              <span aria-hidden="true">← </span>
+              {prev.data.title}
+            </a>
+          )}
+          {next && (
+            <a class="next" href={`/leer/${next.data.slug}`}>
+              {next.data.title}
+              <span aria-hidden="true"> →</span>
+            </a>
+          )}
+        </nav>
+      )
+    }
+  </main>
+</ReadingLayout>
+
+<style>
+  .story-header {
+    padding-top: 94px;
+    padding-bottom: 55px;
+  }
+
+  h1 {
+    margin: 0;
+    font: 400 clamp(64px, 6vw, 91px)/1.02 Georgia, "Iowan Old Style", "Times New Roman", serif;
+    letter-spacing: -0.052em;
+    overflow-wrap: break-word;
+  }
+
+  .date {
+    margin: 23px 0 0;
+    color: theme("colors.cobalt");
+    font: 500 12px/1.5 Arial, Helvetica, sans-serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .story-rule {
+    width: 64px;
+    height: 4px;
+    margin-top: 37px;
+    background: theme("colors.cobalt");
+  }
+
+  .story {
+    max-width: 670px;
+    overflow-wrap: break-word;
+    font: 400 clamp(19px, 1.65vw, 21px)/1.64 Georgia, "Iowan Old Style", "Times New Roman", serif;
+    letter-spacing: -0.006em;
+    font-kerning: normal;
+  }
+
+  .story :global(p) {
+    margin: 0 0 1.35em;
+  }
+
+  .story :global(em),
+  .story :global(i) {
+    font-style: italic;
+  }
+
+  .story :global(strong),
+  .story :global(b) {
+    font-weight: 700;
+  }
+
+  .story :global(h2) {
+    margin: 2.4em 0 0.9em;
+    font-size: 1.08em;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+
+  .story :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .story :global(hr) {
+    border: 0;
+    border-top: 1px solid rgba(3, 41, 143, 0.22);
+    margin: 2em 0;
+  }
+
+  .story-footer {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 22px;
+    margin-top: 85px;
+    padding-top: 33px;
+    border-top: 1px solid rgba(3, 41, 143, 0.22);
+    color: theme("colors.cobalt");
+    font: 600 12px/1.6 Arial, Helvetica, sans-serif;
+    letter-spacing: 0.085em;
+    text-transform: uppercase;
+  }
+
+  .story-footer a {
+    max-width: 48%;
+    color: inherit;
+    overflow-wrap: break-word;
+    text-decoration: none;
+  }
+
+  .story-footer .next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .story-footer a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  @media (hover: hover) {
+    .story-footer a:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .story-header {
+      padding-top: 64px;
+      padding-bottom: 39px;
+    }
+
+    h1 {
+      font-size: clamp(56px, 15vw, 70px);
+    }
+
+    .date {
+      margin-top: 18px;
+      font-size: 11px;
+    }
+
+    .story-rule {
+      margin-top: 29px;
+    }
+
+    .story {
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .story-footer {
+      margin-top: 60px;
+      font-size: 10px;
+    }
+  }
+</style>

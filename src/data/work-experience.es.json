@@ -1,0 +1,29 @@
+{
+  "treatwell-software-engineer": {
+    "description": "Desarrollo y mejora de Treatwell Connect, el producto SaaS que utilizan los salones para gestionar su negocio. Trabajo en el frontend para incorporar mejoras de producto, optimizar los procesos cotidianos y ofrecer una experiencia más fiable y cuidada."
+  },
+  "bird-team-lead": {
+    "description": "Lideré el equipo de Bird Inbox sin dejar de participar directamente en el desarrollo frontend. Me encargé de decisiones sobre la hoja de ruta, la interacción con clientes y la mejora del producto. Me centré en ofrecer soluciones escalables y eficientes para Bird AI CRM."
+  },
+  "royal-schiphol-group-senior-frontend": {
+    "description": "Lideré la migración de aplicaciones PHP heredadas a una arquitectura moderna con React y Remix dentro del equipo de Premium Services. Mejoré el rendimiento, la experiencia de desarrollo y la facilidad de mantenimiento de varias aplicaciones."
+  },
+  "typeform-engineering-manager": {
+    "description": "Gestioné un equipo de cinco ingenieros, fomentando la colaboración y la entrega eficiente de proyectos. Desarrollé planes individuales de crecimiento, implanté estrategias de retención y trabajé estrechamente con responsables de producto para definir mejor los requisitos. Me enfoqué en soluciones escalables y en el uso de datos para medir el progreso y anticipar riesgos."
+  },
+  "foleon-frontend-lead": {
+    "description": "Lideré un equipo de doce desarrolladores frontend, con buenas prácticas y calidad de código. Me centré en la selección de talento y el desarrollo profesional."
+  },
+  "foleon-senior-frontend": {
+    "description": "Participé en varios proyectos con React y mantuve una aplicación heredada en Angular.js, con altos estándares de calidad y buenas prácticas."
+  },
+  "novility-senior-frontend": {
+    "description": "Lideré el desarrollo frontend de un nuevo proyecto y su transición a Angular 7. Diseñé interfaces adaptables, colaboré estrechamente con equipos de backend y tomé decisiones técnicas clave para garantizar una integración fluida."
+  },
+  "amaris-senior-frontend": {
+    "description": "Trabajé en proyectos centrales de AXA Group Solutions, colaborando con equipos multidisciplinares para desarrollar soluciones frontend escalables. Aseguré una integración fluida con los sistemas backend y mantuve una alta calidad de código mediante revisiones y buenas prácticas."
+  },
+  "globant-senior-frontend": {
+    "description": "Lideré la migración de Angular 1.x a Angular 2 en un proyecto para Deloitte, supervisando las decisiones técnicas y su implementación. Transferí conocimientos a otros desarrolladores y mantuve la estabilidad del proyecto durante la gestión de solicitudes de cambio y correcciones de errores."
+  }
+}

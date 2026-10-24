@@ -1,0 +1,122 @@
+---
+import ReadingLayout from "../../layouts/ReadingLayout.astro";
+import { formatEscritoDate, getEscritos, isoDate } from "../../utils/escritos";
+
+export const prerender = true;
+
+const escritos = await getEscritos();
+---
+
+<ReadingLayout title="Escritos | Martín Palmieri" description="Escritos de Martín Palmieri.">
+  <main>
+    <header class="index-header">
+      <h1>Escritos</h1>
+      <div class="rule" aria-hidden="true"></div>
+    </header>
+    <ul class="entries">
+      {
+        escritos.map(escrito => (
+          <li>
+            <a class="entry" href={`/leer/${escrito.data.slug}`}>
+              <span class="entry-title">{escrito.data.title}</span>
+              <time class="entry-date" datetime={isoDate(escrito.data.date)}>
+                {formatEscritoDate(escrito.data.date)}
+              </time>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</ReadingLayout>
+
+<style>
+  .index-header {
+    padding-top: 94px;
+    padding-bottom: 28px;
+  }
+
+  h1 {
+    margin: 0;
+    font: 400 clamp(64px, 6vw, 91px)/1.02 Georgia, "Iowan Old Style", "Times New Roman", serif;
+    letter-spacing: -0.052em;
+  }
+
+  .rule {
+    width: 64px;
+    height: 4px;
+    margin-top: 37px;
+    background: theme("colors.cobalt");
+  }
+
+  .entries {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(3, 41, 143, 0.22);
+  }
+
+  .entry {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.15rem 0.15rem;
+    border-bottom: 1px solid rgba(3, 41, 143, 0.22);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .entry-title {
+    font: 400 clamp(1.25rem, 2.4vw, 1.7rem)/1.2 Georgia, "Iowan Old Style", "Times New Roman", serif;
+    letter-spacing: -0.02em;
+    overflow-wrap: break-word;
+  }
+
+  .entry-date {
+    flex: none;
+    color: theme("colors.cobalt");
+    font: 500 11px/1.5 Arial, Helvetica, sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .entry:focus-visible {
+    outline: 2px solid theme("colors.cobalt");
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  @media (hover: hover) {
+    .entry:hover .entry-title {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .index-header {
+      padding-top: 64px;
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(56px, 15vw, 70px);
+    }
+
+    .rule {
+      margin-top: 29px;
+    }
+
+    .entry {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+      padding: 1.05rem 0.05rem;
+    }
+
+    .entry-date {
+      font-size: 10px;
+    }
+  }
+</style>
