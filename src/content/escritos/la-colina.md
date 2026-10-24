@@ -9,7 +9,7 @@ sources:
 
 La corriente lo lleva y el pequeño hombrecito sonríe y se deja llevar.  
 Nunca tiene un destino en mente cuando salta al agua por las mañanas. A veces va para un lado y a veces va para otro.  
-El viaje termina cuando el agua lo empuja hacia alguna orilla. Se sacude como un perro y empieza a caminar alejándose del río. Esta primer caminata no dura mucho; unos 10 minutos a paso tranquilo lo dejan frente a un enorme árbol que hace sombra y parece indicar el comienzo o el fin de algo. Una pequeña colina surge caprichosa y el pequeño hombre se detiene a observarla como juzgándola, vaya uno a saber usando qué criterio.
+El viaje termina cuando el agua lo empuja hacia alguna orilla. Se sacude como un perro y empieza a caminar alejándose del río. Esta primera caminata no dura mucho; unos 10 minutos a paso tranquilo lo dejan frente a un enorme árbol que hace sombra y parece indicar el comienzo o el fin de algo. Una pequeña colina surge caprichosa y el pequeño hombre se detiene a observarla como juzgándola, vaya uno a saber usando qué criterio.
 
 -¿Vos decís que llegás arriba?- le pregunta una piedra que descansa justo abajo del árbol, a solo unos metros de la colina.  
 -Claro, pero ¿vale la pena?- responde el hombrecito.

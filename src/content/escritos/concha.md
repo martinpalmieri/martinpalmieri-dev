@@ -13,7 +13,7 @@ Y exhalamos... nos quedamos solo con lo que queremos quedarnos...
 Y nos vamos. ¿A dónde nos vamos?  
 ¿A dónde querés ir?
 
--A la concha de tu madre.- piensa mientras, acostado boca arriba, con los ojos cerrados y las rodillas arriba, realiza movimientos circulares e intenta sentir el suelo en cada milímetro de sus pies. Esta de malhumor. Se anotó en esta clase persiguiendo una mina que hoy ni vino.
+-A la concha de tu madre.- piensa mientras, acostado boca arriba, con los ojos cerrados y las rodillas arriba, realiza movimientos circulares e intenta sentir el suelo en cada milímetro de sus pies. Está de mal humor. Se anotó en esta clase persiguiendo una mina que hoy ni vino.
 
 Lentamente logra relajarse. Al principio no se da cuenta, pero la voz de la instructora le llega cada vez más baja. Tiene miedo de haberse quedado dormido y abre los ojos. Se da cuenta de que ya no está en el estudio de yoga que hoy hacía las veces de aula para sea lo que sea que fuera esta clase. Está en una especie de cueva y no entiende nada.
 

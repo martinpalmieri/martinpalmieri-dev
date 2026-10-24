@@ -34,7 +34,7 @@ Los compró y la colección creció de nuevo.
 Este nuevo movimiento inició una maquinaria que duraría años en actividad.
 
 Ahora, cada vez que entraba en una librería o tienda de segunda mano, se tomaba unos minutos más a la hora de revisar la sección “revistas”.  
-*Ovnis* no se editaba desde hacía años cuando se dio cuenta que le faltaba solo un número.
+*Ovnis* no se editaba desde hacía años cuando se dio cuenta de que le faltaba solo un número.
 
 Hubiese sido fácil conseguirla en internet y estaba dispuesto a pagar casi cualquier precio. Pero no le resultaba digno completar su colección de esa manera.  
 Quería encontrársela de casualidad en una de sus aventuras en tiendas o librerías.
@@ -63,7 +63,7 @@ Sintió que alguien le tocaba el hombro. Repentinamente, el sentido auditivo vol
 Se acercó con movimientos erráticos a la caja y, con manos temblorosas, le dio la revista al hombre que estaba detrás del mostrador.
 
 —Serían 200 pesos.  
-Le entrego el dinero sin mirarlo a los ojos.  
+Le entregó el dinero sin mirarlo a los ojos.  
 —Listo, ¿necesitas ticket?  
 —No, ya no hace falta.  
 —Eh… bueno, hasta luego.  

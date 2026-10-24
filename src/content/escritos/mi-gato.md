@@ -11,7 +11,7 @@ sources:
 -Sí, claro- responde mi gato.
 
 Me paro e intento aclarar mis ideas.  
-Para empezar, este gato no hablaba hasta hace un rato. Y tenía pupilas. Estoy seguro que tenía pupilas.  
+Para empezar, este gato no hablaba hasta hace un rato. Y tenía pupilas. Estoy seguro de que tenía pupilas.  
 Algo raro está pasando pero de ahí a que realmente me pueda cumplir un deseo hay un largo trecho.
 
 -¿Qué onda?- le pregunto, ya más tranquilo.  

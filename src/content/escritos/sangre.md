@@ -23,14 +23,14 @@ Me daba la impresión de que cuando uno pierde sangre se marea y si sigue perdie
 Y yo no estoy ni mareado.  
 Me levanto porque decido acercarme al hospital. Nadie va a venir a buscarme.  
 Salgo y llego al ascensor rezando por no encontrarme con nadie. Mi aspecto es violento, terrible, y preferiría no tener que dar explicaciones.  
-Lágrimas rojas que siguen brotando lentamente, la remera manchada en su totalidad, los pantalones antes marrones ahora cubiertos por un manchón bordo o tal vez morado, nunca fui bueno con los colores.  
+Lágrimas rojas que siguen brotando lentamente, la remera manchada en su totalidad, los pantalones antes marrones ahora cubiertos por un manchón bordó o tal vez morado, nunca fui bueno con los colores.  
   
 No me cruzo a nadie y salgo del portal apurado.  
 En la calle no hay mucho movimiento.  
 Camino hasta la esquina y doblo en dirección al hospital. Afortunadamente queda cerca. Aunque ahora que lo pienso no tengo mucho apuro, no estoy ni mareado.  
 Una señora me mira con cara de espanto y yo le sonrío como si no estuviese cubierto de sangre.  
 Un muchacho me pregunta si estoy bien y yo le respondo que sí, que todo bien, sin dejar de caminar.  
-Cuando llego al hospital, en la sala de espera un señor muy grandote deja escapar un gritito y se lleva la mano a la boca. Un niño que jugaba frente a la maquina de café vuelve corriendo con su madre y desde ahí me mira asombrado. La madre le dice al oído que no pasa nada, que ahora me van a ayudar.  
+Cuando llego al hospital, en la sala de espera un señor muy grandote deja escapar un gritito y se lleva la mano a la boca. Un niño que jugaba frente a la máquina de café vuelve corriendo con su madre y desde ahí me mira asombrado. La madre le dice al oído que no pasa nada, que ahora me van a ayudar.  
 Cuando estoy llegando al mostrador, una enfermera que está esperando a una vieja que no logra encontrar qué sé yo qué en el teléfono se para y viene a mi encuentro.  
 -Vení conmigo- me dice mientras me agarra del brazo con firmeza.  
 -Bueno- le digo y ella, sin volver a mirarme, me pregunta qué pasó.  
@@ -52,7 +52,7 @@ Después de caminar un rato más por esos pasillos en los que todo es siempre ig
 Pasamos sin tocar, seguros de que era ahí donde teníamos que entrar.  
 Una silla en el medio de una habitación cuadrada y de paredes altas hasta donde mi vista llega y un poco más.  
 -Sentate que ya te atiende el doctor- me dice la enfermera con una naturalidad que me tranquiliza. Acá no pasa nada. No estoy ni mareado.  
-La silla no es incómoda y encuentro una posición en la que siento que puedo esperar el tiempo que haga falta. Mis manos están cubiertas de sangre. Una primer capa ya seca se resquebraja un poco más a cada movimiento. Rápidamente el asiento de la silla que ocupo queda mojado y teñido.  
+La silla no es incómoda y encuentro una posición en la que siento que puedo esperar el tiempo que haga falta. Mis manos están cubiertas de sangre. Una primera capa ya seca se resquebraja un poco más a cada movimiento. Rápidamente el asiento de la silla que ocupo queda mojado y teñido.  
   
 -Buenas, ¿qué anda pasando?- me pregunta el doctor no más abrir la puerta.  
 -Me sale mucha sangre de todos lados- respondo restándole importancia al asunto.  

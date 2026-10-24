@@ -34,7 +34,7 @@ Nadie contesta. Me voy, sigo caminando.
 Levanto la vista y veo un murciélago. Está intentando volar en el lugar, pero la verdad le sale bastante mal.  
 -Vos salís de noche- le digo porque no se me ocurre otra cosa.  
 -Ya es de noche- me dice.  
-Es verdad, de un momento a esta parte oscureció y no me dí cuenta.  
+Es verdad, de un momento a esta parte oscureció y no me di cuenta.  
 -Tenés razón. Pasa que estoy distraído. No hay nadie.  
 -¿Recibiste lo de las lluvias y eso?  
 -Sí, bueno, pero hace rato no llueve y quería tomar un poco de aire.  
@@ -54,7 +54,7 @@ Podría aplastarlo, es un murciélago chiquito. Como si fuese una lauchita con a
 Me sigue mirando con ganas de morderme o algo. Si le digo que en realidad no todas las gaviotas son iguales no creo que se tranquilice. Ya fue, lo voy a pisar, lo voy a hacer concha, es él o yo.  
 Se ríe a carcajadas.  
 -¿Cómo va a ser una gaviota? Era murciélago, como yo.  
-Como ya había empezado a move la pierna, tengo que hacer como que me acomodo las bolas porque me da miedo que piense que lo iba a pisar. Me cae bien y es el único ser que sigue con vida en esta puta ciudad. Al menos eso sospecho. Y entiendo que él debe saber algo más de lo que me dice.  
+Como ya había empezado a mover la pierna, tengo que hacer como que me acomodo las bolas porque me da miedo que piense que lo iba a pisar. Me cae bien y es el único ser que sigue con vida en esta puta ciudad. Al menos eso sospecho. Y entiendo que él debe saber algo más de lo que me dice.  
 -¿Y ahora qué vas a hacer?- le pregunto para ver si, dándole charla, averiguo algo.  
 -Comer y dar unas vueltas, supongo.  
 -¿Puedo ir con vos?  
@@ -62,9 +62,9 @@ Como ya había empezado a move la pierna, tengo que hacer como que me acomodo la
 -No. Las personas no volamos.  
 -Yo he visto personas volar.  
 -Bueno, estás equivocado. Las personas no vuelan.  
--Yo ví personas volar.  
+-Yo vi personas volar.  
 -Yo no sé volar.  
 -Bueno, voy bajito al lado tuyo.  
 Caminé y él voló durante horas. No nos cruzamos a nadie. Ni un auto. Ni un pájaro. Ni una cucaracha. Y en esta ciudad hay un montón de autos, pájaros y cucarachas.  
 -¿Por qué no nos cruzamos a nadie?- le pregunto, un tanto inquieto.  
--La verdad no lo sé- me responde, pero yo sé que si sabe.
+-La verdad no lo sé- me responde, pero yo sé que sí sabe.

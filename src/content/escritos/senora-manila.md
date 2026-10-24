@@ -33,7 +33,7 @@ El ruido seco que hizo el portazo se quedó rebotando en mis oídos un largo rat
 
 Pero la señora Manila no salió. Se hizo de noche y, con la resignación pesándome en los hombros, volví a casa. Me acosté y rápidamente empecé a soñar. Sentí una presión en el pecho, como si tuviese algo pesado apoyado sobre él. A su lado el viento arrastraba hojas, ramas, papeles arrugados y pequeñas personitas que hablaban mientras volaban y no parecía importarles trasladarse de esta manera involuntaria. No podía entender bien qué es lo que decían porque todas hablaban a la vez y el viento las acercaba y alejaba constantemente. Solo podía escuchar frases aisladas y con eso intentar formarse una idea.  
 -Bueno, mañana vemos- decía una con aire satisfecho.  
--Sí pasa ya veremos qué hacemos, no hay que preocuparse ahora- decía otra.  
+-Si pasa, ya veremos qué hacemos, no hay que preocuparse ahora- decía otra.  
 -Y sí, la cagué, pero bueno- aclaraba otra sin dirigirse a nadie en particular.  
 Sintiendo que era momento de levantarse intenté sacarme de encima ese peso muerto que me oprimía, pero no había nada. Sentí la fuerza que ya apretaba tanto que me dificultaba la respiración, pero por más que intentaba no encontraba nada sobre el pecho.  
 Casi sin aliento estiré la mano y agarré uno de los pequeños seres charlatanes.  

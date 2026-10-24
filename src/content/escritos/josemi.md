@@ -10,4 +10,4 @@ sources:
 -Josemi es nombre de verdad o es onda Jose Miguel y te dicen Josemi.  
 -Josemi es nombre de verdad.  
   
-Me alejo corriendo y evito hasta el dia de mi muerte nuevo contacto con el antes mencionado.
+Me alejo corriendo y evito hasta el día de mi muerte nuevo contacto con él antes mencionado.
